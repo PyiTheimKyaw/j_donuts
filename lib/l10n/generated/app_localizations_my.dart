@@ -87,12 +87,6 @@ class AppLocalizationsMy extends AppLocalizations {
   String get registerLink => 'မှတ်ပုံတင်ရန်';
 
   @override
-  String get phoneAlreadyRegistered => 'ဤနံပါတ်တွင် အကောင့်ရှိပြီးသားဖြစ်သည်။ ';
-
-  @override
-  String get logInLink => 'အစား ဝင်ရန်';
-
-  @override
   String get otpTitle => 'သင့်နံပါတ်ကို အတည်ပြုပါ';
 
   @override

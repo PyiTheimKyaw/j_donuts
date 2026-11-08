@@ -16,24 +16,25 @@ sealed class Failure extends Equatable {
 }
 
 /// Input did not satisfy a domain rule.
+///
+/// [rule] is one of the per-field validation enums (for example
+/// `PhoneValidationError.invalidFormat`), so the UI can map it to a
+/// localised string with an exhaustive `switch`.
 final class ValidationFailure extends Failure {
-  const ValidationFailure(this.code, {super.message});
+  const ValidationFailure(this.rule, {super.message});
 
-  /// Machine-readable rule identifier the UI maps to a localised string.
-  final String code;
+  final Enum rule;
+
+  /// Stable machine-readable identifier, handy for logs and tests.
+  String get code => rule.name;
 
   @override
-  List<Object?> get props => [code, message];
+  List<Object?> get props => [rule, message];
 }
 
 /// The phone number has no account.
 final class NotRegisteredFailure extends Failure {
   const NotRegisteredFailure({super.message});
-}
-
-/// The phone number already has an account.
-final class AlreadyRegisteredFailure extends Failure {
-  const AlreadyRegisteredFailure({super.message});
 }
 
 /// The one-time code did not match.

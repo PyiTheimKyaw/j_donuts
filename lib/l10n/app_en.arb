@@ -23,6 +23,13 @@
   "legalPlaceholderBody": "This is a placeholder. The real document opens here once the app connects to a back end.",
   "close": "Close",
 
+  "progressStep": "Step {step} of {total}",
+  "@progressStep": {
+    "placeholders": {
+      "step": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
   "continueLabel": "Continue",
   "back": "Back",
   "retry": "Retry",

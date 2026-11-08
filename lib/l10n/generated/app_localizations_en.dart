@@ -58,6 +58,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get close => 'Close';
 
   @override
+  String progressStep(int step, int total) {
+    return 'Step $step of $total';
+  }
+
+  @override
   String get continueLabel => 'Continue';
 
   @override

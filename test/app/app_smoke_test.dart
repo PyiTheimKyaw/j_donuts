@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:j_donuts/app/app.dart';
 import 'package:j_donuts/core/storage/key_value_store.dart';
 import 'package:j_donuts/features/auth/data/repositories/secure_session_repository.dart';
+import 'package:j_donuts/features/auth/presentation/screens/onboarding_screen.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
 
 import '../helpers/test_overrides.dart';
@@ -23,7 +24,7 @@ void main() {
     testWidgets('boots to onboarding when nobody is signed in', (tester) async {
       await pumpApp(tester);
 
-      expect(find.text('Onboarding'), findsOneWidget);
+      expect(find.byType(OnboardingScreen), findsOneWidget);
     });
 
     testWidgets('boots to home when a session is stored', (tester) async {

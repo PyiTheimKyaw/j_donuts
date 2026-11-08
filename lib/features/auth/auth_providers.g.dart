@@ -8,20 +8,9 @@ part of 'auth_providers.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Composition root for the auth feature.
-///
-/// This is the only file that knows which concrete implementations back the
-/// domain interfaces. Swap the fake for a real API here; tests override the
-/// same providers with in-memory doubles.
 
 @ProviderFor(userLocalDataSource)
 final userLocalDataSourceProvider = UserLocalDataSourceProvider._();
-
-/// Composition root for the auth feature.
-///
-/// This is the only file that knows which concrete implementations back the
-/// domain interfaces. Swap the fake for a real API here; tests override the
-/// same providers with in-memory doubles.
 
 final class UserLocalDataSourceProvider
     extends
@@ -31,11 +20,6 @@ final class UserLocalDataSourceProvider
           UserLocalDataSource
         >
     with $Provider<UserLocalDataSource> {
-  /// Composition root for the auth feature.
-  ///
-  /// This is the only file that knows which concrete implementations back the
-  /// domain interfaces. Swap the fake for a real API here; tests override the
-  /// same providers with in-memory doubles.
   UserLocalDataSourceProvider._()
     : super(
         from: null,

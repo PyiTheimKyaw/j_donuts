@@ -59,6 +59,11 @@ class AppLocalizationsMy extends AppLocalizations {
   String get close => 'ပိတ်ရန်';
 
   @override
+  String progressStep(int step, int total) {
+    return 'အဆင့် $step / $total';
+  }
+
+  @override
   String get continueLabel => 'ဆက်လုပ်ရန်';
 
   @override

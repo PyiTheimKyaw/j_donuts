@@ -3,7 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:j_donuts/app/router/app_routes.dart';
 import 'package:j_donuts/app/router/auth_redirect.dart';
 import 'package:j_donuts/core/widgets/placeholder_screen.dart';
+import 'package:j_donuts/core/widgets/shared_axis_page.dart';
 import 'package:j_donuts/core/widgets/splash_screen.dart';
+import 'package:j_donuts/features/auth/presentation/screens/onboarding_screen.dart';
+import 'package:j_donuts/features/auth/presentation/screens/phone_screen.dart';
 import 'package:j_donuts/features/auth/presentation/session/session_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -49,11 +52,23 @@ final class _SessionRefresh extends ChangeNotifier {
 }
 
 List<RouteBase> get _authRoutes => [
-  _placeholder(AppRoutes.onboarding, 'Onboarding'),
-  _placeholder(AppRoutes.phone, 'Phone number'),
-  _placeholder(AppRoutes.otp, 'Verify number'),
-  _placeholder(AppRoutes.name, 'Name'),
-  _placeholder(AppRoutes.dateOfBirth, 'Date of birth'),
+  GoRoute(
+    path: AppRoutes.onboarding,
+    builder: (context, state) => const OnboardingScreen(),
+  ),
+  _step(AppRoutes.phone, (context, state) => const PhoneScreen()),
+  _step(
+    AppRoutes.otp,
+    (context, state) => const PlaceholderScreen(title: 'Verify number'),
+  ),
+  _step(
+    AppRoutes.name,
+    (context, state) => const PlaceholderScreen(title: 'Name'),
+  ),
+  _step(
+    AppRoutes.dateOfBirth,
+    (context, state) => const PlaceholderScreen(title: 'Date of birth'),
+  ),
   _placeholder(AppRoutes.welcome, 'Welcome'),
 ];
 
@@ -64,6 +79,16 @@ List<RouteBase> get _shellRoutes => [
   _placeholder(AppRoutes.wallet, 'Wallet', Icons.wallet_outlined),
   _placeholder(AppRoutes.settings, 'Settings', Icons.settings_outlined),
 ];
+
+GoRoute _step(String path, GoRouterWidgetBuilder builder) => GoRoute(
+  path: path,
+  pageBuilder: (context, state) => SharedAxisPage<void>(
+    context: context,
+    key: state.pageKey,
+    name: path,
+    child: builder(context, state),
+  ),
+);
 
 GoRoute _placeholder(
   String path,

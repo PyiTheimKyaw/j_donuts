@@ -182,6 +182,12 @@ abstract class AppLocalizations {
   /// **'Close'**
   String get close;
 
+  /// No description provided for @progressStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {step} of {total}'**
+  String progressStep(int step, int total);
+
   /// No description provided for @continueLabel.
   ///
   /// In en, this message translates to:

@@ -8,27 +8,18 @@ part of 'session_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Who is signed in on this device.
-///
-/// `AsyncLoading` while the stored session is being read at launch, then
-/// `AsyncData(null)` for signed out or `AsyncData(session)` for signed in.
-/// The router's redirect watches this.
+/// Drives the router redirect: loading while secure storage is read, then
+/// `null` (signed out) or the session.
 
 @ProviderFor(SessionController)
 final sessionControllerProvider = SessionControllerProvider._();
 
-/// Who is signed in on this device.
-///
-/// `AsyncLoading` while the stored session is being read at launch, then
-/// `AsyncData(null)` for signed out or `AsyncData(session)` for signed in.
-/// The router's redirect watches this.
+/// Drives the router redirect: loading while secure storage is read, then
+/// `null` (signed out) or the session.
 final class SessionControllerProvider
     extends $AsyncNotifierProvider<SessionController, AuthSession?> {
-  /// Who is signed in on this device.
-  ///
-  /// `AsyncLoading` while the stored session is being read at launch, then
-  /// `AsyncData(null)` for signed out or `AsyncData(session)` for signed in.
-  /// The router's redirect watches this.
+  /// Drives the router redirect: loading while secure storage is read, then
+  /// `null` (signed out) or the session.
   SessionControllerProvider._()
     : super(
         from: null,
@@ -48,13 +39,10 @@ final class SessionControllerProvider
   SessionController create() => SessionController();
 }
 
-String _$sessionControllerHash() => r'f38d8f001a76c35eefefe9f30f3d79664a995bd6';
+String _$sessionControllerHash() => r'308240b2941e4b4a30d4e558fb1f58e8f7a210b4';
 
-/// Who is signed in on this device.
-///
-/// `AsyncLoading` while the stored session is being read at launch, then
-/// `AsyncData(null)` for signed out or `AsyncData(session)` for signed in.
-/// The router's redirect watches this.
+/// Drives the router redirect: loading while secure storage is read, then
+/// `null` (signed out) or the session.
 
 abstract class _$SessionController extends $AsyncNotifier<AuthSession?> {
   FutureOr<AuthSession?> build();

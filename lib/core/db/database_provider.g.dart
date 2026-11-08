@@ -8,20 +8,13 @@ part of 'database_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// The one database instance for the whole app. Tests override this with an
-/// in-memory database.
 
 @ProviderFor(appDatabase)
 final appDatabaseProvider = AppDatabaseProvider._();
 
-/// The one database instance for the whole app. Tests override this with an
-/// in-memory database.
-
 final class AppDatabaseProvider
     extends $FunctionalProvider<AppDatabase, AppDatabase, AppDatabase>
     with $Provider<AppDatabase> {
-  /// The one database instance for the whole app. Tests override this with an
-  /// in-memory database.
   AppDatabaseProvider._()
     : super(
         from: null,

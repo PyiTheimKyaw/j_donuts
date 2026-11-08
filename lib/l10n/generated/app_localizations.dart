@@ -296,6 +296,18 @@ abstract class AppLocalizations {
   /// **'A new code has been sent.'**
   String get otpResent;
 
+  /// No description provided for @otpAttemptsLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 attempt left.} other{{count} attempts left.}}'**
+  String otpAttemptsLeft(int count);
+
+  /// No description provided for @otpCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'6-digit verification code'**
+  String get otpCodeLabel;
+
   /// No description provided for @nameTitle.
   ///
   /// In en, this message translates to:

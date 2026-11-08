@@ -158,12 +158,12 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRow> {
 }
 
 class UserRow extends DataClass implements Insertable<UserRow> {
-  /// National digits without the leading zero, e.g. `9254135592`.
+  /// National digits, no leading zero.
   final String phone;
   final String firstName;
   final String? lastName;
 
-  /// Calendar date stored as `yyyy-MM-dd`; never a timestamp.
+  /// `yyyy-MM-dd`; a timestamp would shift across time zones.
   final String birthDate;
   final DateTime createdAt;
   const UserRow({

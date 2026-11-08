@@ -8,23 +8,13 @@ part of 'app_router.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Application router with the auth guard.
-///
-/// Screens still mapped to placeholders are replaced feature by feature.
 
 @ProviderFor(appRouter)
 final appRouterProvider = AppRouterProvider._();
 
-/// Application router with the auth guard.
-///
-/// Screens still mapped to placeholders are replaced feature by feature.
-
 final class AppRouterProvider
     extends $FunctionalProvider<GoRouter, GoRouter, GoRouter>
     with $Provider<GoRouter> {
-  /// Application router with the auth guard.
-  ///
-  /// Screens still mapped to placeholders are replaced feature by feature.
   AppRouterProvider._()
     : super(
         from: null,

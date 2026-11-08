@@ -37,6 +37,22 @@ abstract final class AppColors {
   static const Color tierGold = Color(0xFFE7C45A);
   static const Color tierPlatinum = Color(0xFF9ED8F0);
 
+  // Illustration
+  static const Color pastelCyan = Color(0xFF7FD9EC);
+  static const Color pastelBlue = Color(0xFFC9E7F6);
+  static const Color pastelPeach = Color(0xFFFBE3D2);
+  static const Color pastelLavender = Color(0xFFE6DBF8);
+  static const Color pastelPink = Color(0xFFFFD6E3);
+  static const Color pastelYellow = Color(0xFFFFE9B5);
+  static const Color donutDough = Color(0xFFE9B983);
+  static const Color donutShadow = Color(0xFFC98F5A);
+  static const Color icingPink = Color(0xFFF58FB6);
+  static const Color icingPurple = Color(0xFF9D7FDC);
+  static const Color icingChocolate = Color(0xFF5B3A2E);
+  static const Color icingWhite = Color(0xFFFFF4F7);
+  static const Color googleBlue = Color(0xFF4285F4);
+  static const Color facebookBlue = Color(0xFF1877F2);
+
   // Disabled
   static const Color disabledFill = Color(0xFFE2E4E8);
   static const Color disabledInk = Color(0xFFB4B8C0);

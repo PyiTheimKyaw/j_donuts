@@ -6,6 +6,7 @@ import 'package:j_donuts/core/widgets/app_button.dart';
 import 'package:j_donuts/features/auth/data/datasources/user_local_data_source.dart';
 import 'package:j_donuts/features/auth/data/mappers/user_mapper.dart';
 import 'package:j_donuts/features/auth/domain/entities/entities.dart';
+import 'package:j_donuts/features/auth/presentation/screens/otp_screen.dart';
 import 'package:j_donuts/features/auth/presentation/screens/phone_screen.dart';
 
 import '../../../helpers/pump_app.dart';
@@ -79,9 +80,9 @@ void main() {
       await enterPhone(tester, validNumber);
       await tester.tap(continueButton);
       await tester.pumpAndSettle();
-      expect(find.text('Verify number'), findsOneWidget);
+      expect(find.byType(OtpScreen), findsOneWidget);
 
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(find.byIcon(Icons.arrow_back_rounded));
       await tester.pumpAndSettle();
 
       expect(find.text(validNumber), findsOneWidget);
@@ -97,7 +98,7 @@ void main() {
       await tester.tap(continueButton);
       await tester.pumpAndSettle();
 
-      expect(find.text('Verify number'), findsOneWidget);
+      expect(find.byType(OtpScreen), findsOneWidget);
     });
 
     testWidgets('shows the loading state and sends one request on double tap', (
@@ -123,7 +124,7 @@ void main() {
       );
 
       await tester.pumpAndSettle();
-      expect(find.text('Verify number'), findsOneWidget);
+      expect(find.byType(OtpScreen), findsOneWidget);
     });
   });
 
@@ -159,7 +160,7 @@ void main() {
 
       await tester.tap(continueButton);
       await tester.pumpAndSettle();
-      expect(find.text('Verify number'), findsOneWidget);
+      expect(find.byType(OtpScreen), findsOneWidget);
     });
 
     testWidgets('a registered number goes straight to the OTP step', (
@@ -183,7 +184,7 @@ void main() {
       await tester.tap(continueButton);
       await tester.pumpAndSettle();
 
-      expect(find.text('Verify number'), findsOneWidget);
+      expect(find.byType(OtpScreen), findsOneWidget);
     });
   });
 }

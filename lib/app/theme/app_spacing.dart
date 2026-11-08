@@ -25,6 +25,7 @@ abstract final class AppSizes {
   static const double iconButton = 44;
   static const double progressRing = 36;
   static const double otpBox = 48;
+  static const double otpBoxHeight = 64;
   static const double bottomNavHeight = 72;
   static const double minTapTarget = 48;
 }

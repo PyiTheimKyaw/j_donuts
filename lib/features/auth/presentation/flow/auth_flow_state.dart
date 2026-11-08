@@ -17,6 +17,7 @@ abstract class AuthFlowState with _$AuthFlowState {
     int? birthDay,
     int? birthYear,
     @Default(false) bool isSubmitting,
+    @Default(false) bool isOtpLocked,
     Failure? error,
   }) = _AuthFlowState;
 

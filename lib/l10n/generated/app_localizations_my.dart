@@ -122,6 +122,19 @@ class AppLocalizationsMy extends AppLocalizations {
   String get otpResent => 'ကုဒ်အသစ် ပို့ပြီးပါပြီ။';
 
   @override
+  String otpAttemptsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'နောက်ထပ် $count ကြိမ် ကြိုးစားနိုင်ပါသည်။',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get otpCodeLabel => 'အတည်ပြုကုဒ် ဂဏန်း ၆ လုံး';
+
+  @override
   String get nameTitle => 'သင့်နာမည်က\nဘာလဲ?';
 
   @override

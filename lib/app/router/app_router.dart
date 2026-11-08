@@ -6,6 +6,7 @@ import 'package:j_donuts/core/widgets/placeholder_screen.dart';
 import 'package:j_donuts/core/widgets/shared_axis_page.dart';
 import 'package:j_donuts/core/widgets/splash_screen.dart';
 import 'package:j_donuts/features/auth/presentation/screens/onboarding_screen.dart';
+import 'package:j_donuts/features/auth/presentation/screens/otp_screen.dart';
 import 'package:j_donuts/features/auth/presentation/screens/phone_screen.dart';
 import 'package:j_donuts/features/auth/presentation/session/session_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -57,10 +58,7 @@ List<RouteBase> get _authRoutes => [
     builder: (context, state) => const OnboardingScreen(),
   ),
   _step(AppRoutes.phone, (context, state) => const PhoneScreen()),
-  _step(
-    AppRoutes.otp,
-    (context, state) => const PlaceholderScreen(title: 'Verify number'),
-  ),
+  _step(AppRoutes.otp, (context, state) => const OtpScreen()),
   _step(
     AppRoutes.name,
     (context, state) => const PlaceholderScreen(title: 'Name'),

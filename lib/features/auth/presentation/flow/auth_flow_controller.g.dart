@@ -48,7 +48,7 @@ final class AuthFlowControllerProvider
 }
 
 String _$authFlowControllerHash() =>
-    r'2324abbf7e62a5c14747413a871b7f6f74dc4095';
+    r'1bca0fa5649812d4ed6b616ab160c743ed32dc35';
 
 /// Kept alive because Onboarding sets the intent before any step is listening;
 /// an auto-disposed provider would drop it. [start] resets the state instead.

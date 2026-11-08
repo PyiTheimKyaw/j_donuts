@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:j_donuts/core/result/failure.dart';
 import 'package:j_donuts/features/auth/domain/entities/entities.dart';
 import 'package:j_donuts/features/auth/presentation/flow/auth_flow_controller.dart';
+import 'package:j_donuts/features/auth/presentation/session/session_controller.dart';
 
 import '../../../helpers/test_overrides.dart';
 
@@ -85,6 +86,66 @@ void main() {
       expect(state.intent, AuthIntent.register);
       expect(state.error, isNull);
       expect(state.phone, isNotNull);
+    });
+  });
+
+  group('AuthFlowController OTP', () {
+    Future<void> reachOtp() async {
+      controller().phoneChanged('09254135592');
+      await controller().submitPhone();
+    }
+
+    test('a wrong code reports attempts left without locking', () async {
+      await reachOtp();
+
+      final outcome = await controller().verifyOtp('000000');
+
+      final state = container.read(authFlowControllerProvider);
+      expect(outcome, isNull);
+      expect(state.error, const InvalidOtpFailure(attemptsLeft: 2));
+      expect(state.isOtpLocked, isFalse);
+    });
+
+    test('the third wrong code locks and further codes are ignored', () async {
+      await reachOtp();
+      for (var i = 0; i < 3; i++) {
+        await controller().verifyOtp('000000');
+      }
+
+      final outcome = await controller().verifyOtp('123456');
+
+      expect(container.read(authFlowControllerProvider).isOtpLocked, isTrue);
+      expect(outcome, isNull);
+    });
+
+    test('resending lifts the lock', () async {
+      await reachOtp();
+      for (var i = 0; i < 3; i++) {
+        await controller().verifyOtp('000000');
+      }
+
+      final sent = await controller().resendOtp();
+
+      final state = container.read(authFlowControllerProvider);
+      expect(sent, isTrue);
+      expect(state.isOtpLocked, isFalse);
+      expect(state.error, isNull);
+    });
+
+    test('an incomplete code is not sent', () async {
+      await reachOtp();
+
+      expect(await controller().verifyOtp('123'), isNull);
+      expect(container.read(authFlowControllerProvider).error, isNull);
+    });
+
+    test('a new number yields NewUser and no session', () async {
+      await reachOtp();
+
+      final outcome = await controller().verifyOtp('123456');
+
+      expect(outcome, isA<NewUser>());
+      expect(await container.read(sessionControllerProvider.future), isNull);
     });
   });
 }

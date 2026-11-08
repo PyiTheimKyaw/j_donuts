@@ -120,6 +120,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otpResent => 'A new code has been sent.';
 
   @override
+  String otpAttemptsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count attempts left.',
+      one: '1 attempt left.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get otpCodeLabel => '6-digit verification code';
+
+  @override
   String get nameTitle => 'What\'s your\nname?';
 
   @override

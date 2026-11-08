@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-/// Failures are values, not exceptions, so callers branch on them without
-/// try/catch and nothing is swallowed on the way up.
-sealed class Failure extends Equatable {
+/// Returned as values so callers branch without try/catch. They also implement
+/// [Exception] so a repository stream can carry one to `AsyncValue.error`.
+sealed class Failure extends Equatable implements Exception {
   const Failure({this.message});
 
   /// Developer-facing detail; never rendered to users.

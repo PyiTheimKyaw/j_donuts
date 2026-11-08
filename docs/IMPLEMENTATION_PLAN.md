@@ -53,8 +53,8 @@ also exercises the Myanmar-script name validation and the text-scale layout chec
 | 2 | `feat/auth-data-session` | Drift v1 with `Users`, `FakeAuthRepository`, secure session store, router redirect guard | merged |
 | 3a | `feat/onboarding-phone` | shared auth scaffold, button, text field, progress ring; onboarding and phone screens | merged |
 | 3b | `feat/otp` | OTP boxes, shake, lockout, resend countdown | merged |
-| 3c | `feat/name-dob` | name and date-of-birth steps, ring to check morph, registration completes | in review |
-| 4 | `feat/offline-data` | Drift v2 catalogue tables, seed JSON and images, connectivity with reachability, image widget | |
+| 3c | `feat/name-dob` | name and date-of-birth steps, ring to check morph, registration completes | merged |
+| 4 | `feat/offline-data` | Drift v2 catalogue tables, seed JSON and images, connectivity with reachability, image widget | in review |
 | 5 | `feat/home-shell` | bottom nav with sliding pill, welcome, home sections with skeletons, settings log out | |
 | 6 | `feat/product-detail` | hero transition, MMK formatting, animated quantity stepper, live total | |
 | 7 | `feat/rewards` | points ring, tier ladder, tabs, challenge art with CustomPainter, badge pop | |

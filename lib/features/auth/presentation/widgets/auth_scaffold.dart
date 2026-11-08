@@ -8,6 +8,11 @@ import 'package:j_donuts/l10n/generated/app_localizations.dart';
 
 /// Scrolls only when the keyboard leaves too little room; otherwise [bottom]
 /// stays pinned to the foot of the screen.
+///
+/// Deliberately avoids `IntrinsicHeight` + `Expanded`: intrinsics report a
+/// widget's target size, so while an error message animates out (or the
+/// keyboard resizes the viewport) the body is briefly taller than measured and
+/// overflows. A min-height column with `spaceBetween` needs no measuring pass.
 class AuthScaffold extends StatelessWidget {
   const AuthScaffold({
     required this.body,
@@ -38,31 +43,40 @@ class AuthScaffold extends StatelessWidget {
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.gutter,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _TopBar(
-                          showBack: showBack,
-                          step: step,
-                          totalSteps: totalSteps,
-                        ),
-                        Expanded(child: body),
-                        if (bottom != null) ...[
-                          const SizedBox(height: AppSpacing.xl),
-                          bottom!,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.gutter,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _TopBar(
+                            showBack: showBack,
+                            step: step,
+                            totalSteps: totalSteps,
+                          ),
+                          body,
                         ],
-                        if (showFooter) ...[
-                          const SizedBox(height: AppSpacing.xl),
-                          const LegalFooter(),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (bottom != null) ...[
+                            const SizedBox(height: AppSpacing.xl),
+                            bottom!,
+                          ],
+                          if (showFooter) ...[
+                            const SizedBox(height: AppSpacing.xl),
+                            const LegalFooter(),
+                          ],
+                          const SizedBox(height: AppSpacing.lg),
                         ],
-                        const SizedBox(height: AppSpacing.lg),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

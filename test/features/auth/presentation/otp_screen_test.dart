@@ -8,6 +8,7 @@ import 'package:j_donuts/features/auth/data/mappers/user_mapper.dart';
 import 'package:j_donuts/features/auth/data/repositories/fake_auth_repository.dart';
 import 'package:j_donuts/features/auth/domain/auth_policy.dart';
 import 'package:j_donuts/features/auth/domain/entities/entities.dart';
+import 'package:j_donuts/features/auth/presentation/screens/name_screen.dart';
 import 'package:j_donuts/features/auth/presentation/screens/otp_screen.dart';
 
 import '../../../helpers/pump_app.dart';
@@ -142,7 +143,7 @@ void main() {
       await enterCode(tester, rightCode);
 
       expect(find.byType(OtpScreen), findsNothing);
-      expect(find.text('Name'), findsWidgets);
+      expect(find.byType(NameScreen), findsOneWidget);
     });
 
     testWidgets('a pasted message is reduced to its digits', (tester) async {
@@ -150,7 +151,7 @@ void main() {
 
       await enterCode(tester, 'Your code: 123 456');
 
-      expect(find.text('Name'), findsWidgets);
+      expect(find.byType(NameScreen), findsOneWidget);
     });
 
     testWidgets('a returning user lands on Home', (tester) async {

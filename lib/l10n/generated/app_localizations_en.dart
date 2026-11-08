@@ -166,6 +166,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dobYear => 'Year';
 
   @override
+  String get dobChooseMonth => 'Choose your birth month';
+
+  @override
   String get dobInvalidDate => 'That isn\'t a real calendar date.';
 
   @override

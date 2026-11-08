@@ -14,6 +14,7 @@ class AppTextField extends StatefulWidget {
     this.hintText,
     this.errorText,
     this.leading,
+    this.trailing,
     this.keyboardType,
     this.textInputAction,
     this.inputFormatters,
@@ -21,6 +22,8 @@ class AppTextField extends StatefulWidget {
     this.textCapitalization = TextCapitalization.none,
     this.autofocus = false,
     this.enabled = true,
+    this.readOnly = false,
+    this.onTap,
     this.onChanged,
     this.onSubmitted,
     super.key,
@@ -29,8 +32,12 @@ class AppTextField extends StatefulWidget {
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final String? hintText;
+
+  /// An empty string marks the field invalid without repeating a message
+  /// that a sibling field already shows.
   final String? errorText;
   final Widget? leading;
+  final Widget? trailing;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final List<TextInputFormatter>? inputFormatters;
@@ -38,6 +45,8 @@ class AppTextField extends StatefulWidget {
   final TextCapitalization textCapitalization;
   final bool autofocus;
   final bool enabled;
+  final bool readOnly;
+  final VoidCallback? onTap;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
 
@@ -109,6 +118,7 @@ class _AppTextFieldState extends State<AppTextField> {
                 const SizedBox(width: AppSpacing.lg),
               ],
               Expanded(child: _buildInput()),
+              if (widget.trailing != null) widget.trailing!,
             ],
           ),
         ),
@@ -122,6 +132,9 @@ class _AppTextFieldState extends State<AppTextField> {
       controller: widget.controller,
       focusNode: _focusNode,
       enabled: widget.enabled,
+      readOnly: widget.readOnly,
+      onTap: widget.onTap,
+      showCursor: !widget.readOnly,
       autofocus: widget.autofocus,
       keyboardType: widget.keyboardType,
       textInputAction: widget.textInputAction,
@@ -160,7 +173,7 @@ class _AnimatedErrorText extends StatelessWidget {
       alignment: Alignment.topLeft,
       child: AnimatedSwitcher(
         duration: duration,
-        child: text == null
+        child: text == null || text!.isEmpty
             ? const SizedBox(width: double.infinity)
             : Padding(
                 key: ValueKey(text),

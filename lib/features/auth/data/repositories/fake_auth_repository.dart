@@ -1,13 +1,12 @@
 import 'package:j_donuts/core/result/failure.dart';
 import 'package:j_donuts/core/result/result.dart';
+import 'package:j_donuts/core/time/clock.dart';
 import 'package:j_donuts/features/auth/data/datasources/user_local_data_source.dart';
 import 'package:j_donuts/features/auth/data/mappers/user_mapper.dart';
 import 'package:j_donuts/features/auth/domain/auth_policy.dart';
 import 'package:j_donuts/features/auth/domain/entities/entities.dart';
 import 'package:j_donuts/features/auth/domain/repositories/auth_repository.dart';
 import 'package:j_donuts/features/auth/domain/repositories/session_repository.dart';
-
-typedef Clock = DateTime Function();
 
 /// Simulates a remote auth API against the local database. An HTTP
 /// implementation of [AuthRepository] replaces it without touching other files.

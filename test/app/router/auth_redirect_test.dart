@@ -65,4 +65,21 @@ void main() {
       expect(redirect(signedIn, AppRoutes.productPath('p_1')), isNull);
     });
   });
+
+  group('resolveAuthRedirect right after registration', () {
+    String? redirectPending(String location) => resolveAuthRedirect(
+      session: signedIn,
+      location: location,
+      welcomePending: true,
+    );
+
+    test('sends the new user from the last auth step to Welcome', () {
+      expect(redirectPending(AppRoutes.dateOfBirth), AppRoutes.welcome);
+    });
+
+    test('allows Welcome itself and anything beyond it', () {
+      expect(redirectPending(AppRoutes.welcome), isNull);
+      expect(redirectPending(AppRoutes.home), isNull);
+    });
+  });
 }

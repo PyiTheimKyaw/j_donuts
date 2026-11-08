@@ -73,6 +73,7 @@
   "dobMonth": "Month",
   "dobDay": "Day",
   "dobYear": "Year",
+  "dobChooseMonth": "Choose your birth month",
   "dobInvalidDate": "That isn't a real calendar date.",
   "dobInFuture": "Your date of birth can't be in the future.",
   "dobTooYoung": "You must be at least {age} years old.",

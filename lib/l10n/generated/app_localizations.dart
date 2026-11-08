@@ -368,6 +368,12 @@ abstract class AppLocalizations {
   /// **'Year'**
   String get dobYear;
 
+  /// No description provided for @dobChooseMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your birth month'**
+  String get dobChooseMonth;
+
   /// No description provided for @dobInvalidDate.
   ///
   /// In en, this message translates to:

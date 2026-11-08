@@ -5,10 +5,13 @@ import 'package:j_donuts/app/router/auth_redirect.dart';
 import 'package:j_donuts/core/widgets/placeholder_screen.dart';
 import 'package:j_donuts/core/widgets/shared_axis_page.dart';
 import 'package:j_donuts/core/widgets/splash_screen.dart';
+import 'package:j_donuts/features/auth/presentation/screens/date_of_birth_screen.dart';
+import 'package:j_donuts/features/auth/presentation/screens/name_screen.dart';
 import 'package:j_donuts/features/auth/presentation/screens/onboarding_screen.dart';
 import 'package:j_donuts/features/auth/presentation/screens/otp_screen.dart';
 import 'package:j_donuts/features/auth/presentation/screens/phone_screen.dart';
 import 'package:j_donuts/features/auth/presentation/session/session_controller.dart';
+import 'package:j_donuts/features/auth/presentation/session/welcome_pending.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_router.g.dart';
@@ -26,6 +29,7 @@ GoRouter appRouter(Ref ref) {
     redirect: (context, state) => resolveAuthRedirect(
       session: ref.read(sessionControllerProvider),
       location: state.matchedLocation,
+      welcomePending: ref.read(welcomePendingProvider),
     ),
     routes: [
       GoRoute(
@@ -59,14 +63,8 @@ List<RouteBase> get _authRoutes => [
   ),
   _step(AppRoutes.phone, (context, state) => const PhoneScreen()),
   _step(AppRoutes.otp, (context, state) => const OtpScreen()),
-  _step(
-    AppRoutes.name,
-    (context, state) => const PlaceholderScreen(title: 'Name'),
-  ),
-  _step(
-    AppRoutes.dateOfBirth,
-    (context, state) => const PlaceholderScreen(title: 'Date of birth'),
-  ),
+  _step(AppRoutes.name, (context, state) => const NameScreen()),
+  _step(AppRoutes.dateOfBirth, (context, state) => const DateOfBirthScreen()),
   _placeholder(AppRoutes.welcome, 'Welcome'),
 ];
 

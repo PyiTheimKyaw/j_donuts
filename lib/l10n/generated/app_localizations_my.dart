@@ -167,6 +167,9 @@ class AppLocalizationsMy extends AppLocalizations {
   String get dobYear => 'နှစ်';
 
   @override
+  String get dobChooseMonth => 'မွေးလ ရွေးပါ';
+
+  @override
   String get dobInvalidDate => 'ဤရက်စွဲသည် ပြက္ခဒိန်တွင် မရှိပါ။';
 
   @override

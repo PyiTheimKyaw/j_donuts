@@ -1,9 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:j_donuts/core/result/failure.dart';
+import 'package:j_donuts/core/time/clock.dart';
 import 'package:j_donuts/features/auth/domain/entities/entities.dart';
 import 'package:j_donuts/features/auth/presentation/flow/auth_flow_controller.dart';
 import 'package:j_donuts/features/auth/presentation/session/session_controller.dart';
+import 'package:j_donuts/features/auth/presentation/session/welcome_pending.dart';
 
 import '../../../helpers/test_overrides.dart';
 
@@ -146,6 +148,72 @@ void main() {
 
       expect(outcome, isA<NewUser>());
       expect(await container.read(sessionControllerProvider.future), isNull);
+    });
+  });
+
+  group('AuthFlowController registration', () {
+    Future<void> fillValidDetails() async {
+      controller()
+        ..start(AuthIntent.register)
+        ..phoneChanged('09254135592')
+        ..firstNameChanged('Ye Min')
+        ..lastNameChanged('')
+        ..birthMonthChanged(5)
+        ..birthDayChanged(1)
+        ..birthYearChanged(1980);
+    }
+
+    test('signs in and marks Welcome as pending', () async {
+      await fillValidDetails();
+
+      final registered = await controller().completeRegistration();
+
+      expect(registered, isTrue);
+      expect(container.read(welcomePendingProvider), isTrue);
+      expect(
+        (await container.read(sessionControllerProvider.future))?.phone,
+        const PhoneNumber('9254135592'),
+      );
+    });
+
+    test('refuses to submit an invalid date', () async {
+      await fillValidDetails();
+      controller().birthDayChanged(31);
+      controller().birthMonthChanged(4);
+
+      expect(await controller().completeRegistration(), isFalse);
+      expect(container.read(welcomePendingProvider), isFalse);
+    });
+
+    test('starting a new flow clears a pending Welcome', () async {
+      await fillValidDetails();
+      await controller().completeRegistration();
+
+      controller().start(AuthIntent.logIn);
+
+      expect(container.read(welcomePendingProvider), isFalse);
+    });
+
+    test('judges age against the injected clock', () {
+      final local = ProviderContainer(
+        overrides: [
+          ...testOverrides(),
+          clockProvider.overrideWithValue(() => DateTime(2026, 11, 8)),
+        ],
+      );
+      addTearDown(local.dispose);
+      local.read(authFlowControllerProvider.notifier)
+        ..birthMonthChanged(11)
+        ..birthDayChanged(9)
+        ..birthYearChanged(2013);
+
+      expect(
+        local
+            .read(authFlowControllerProvider.notifier)
+            .birthDateResult
+            .isFailure,
+        isTrue,
+      );
     });
   });
 }

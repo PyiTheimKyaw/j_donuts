@@ -1,4 +1,4 @@
-include: package:flutter_lints/flutter.yaml
+include: package:very_good_analysis/analysis_options.yaml
 
 analyzer:
   exclude:
@@ -9,3 +9,20 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
+    - lib/**/*.g.dart
+    - lib/**/*.freezed.dart
+    - lib/l10n/generated/**
+  errors:
+    invalid_annotation_target: ignore
+
+linter:
+  rules:
+    # Doc comments on every public member add noise in a feature-first app
+    # where names already say what things are.
+    public_member_api_docs: false
+    # Relative imports inside a feature keep moves cheap; absolute for cross-feature.
+    always_use_package_imports: false
+    prefer_relative_imports: false
+    # Suggests the `const this(...)` declaring-constructor syntax, which Dart
+    # 3.13 still gates behind an experiment flag.
+    unnecessary_type_name_in_constructor: false

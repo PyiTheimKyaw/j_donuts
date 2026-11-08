@@ -1,0 +1,173 @@
+{
+  "data": {
+    "products": [
+      {
+        "id": "p_coconut",
+        "code": "JD022123",
+        "name": "Coconut Donut",
+        "priceMmk": 3200,
+        "isNew": true,
+        "discountPercent": null,
+        "imageUrl": "https://images.unsplash.com/photo-1630150275481-fdd323506564?w=800&q=75&fm=jpg",
+        "description": "Enjoy our scrumptious donuts – soft, sweet, and satisfying in every bite. Choose from classic glazed, rich chocolate, or fun sprinkles. Dive into deliciousness now!"
+      },
+      {
+        "id": "p_mistletoe_box",
+        "code": "JD011201",
+        "name": "Mistletoe Romance box",
+        "priceMmk": 18000,
+        "isNew": false,
+        "discountPercent": 50,
+        "imageUrl": "https://images.unsplash.com/photo-1626379801357-537572de4ad6?w=800&q=75&fm=jpg",
+        "description": "Six festive favourites in one box, made for sharing under the mistletoe. A seasonal mix of glazed, coconut and sprinkle donuts."
+      },
+      {
+        "id": "p_christmas_mini",
+        "code": "JD011202",
+        "name": "Christmas Mini Family box",
+        "priceMmk": 24000,
+        "isNew": true,
+        "discountPercent": null,
+        "imageUrl": "https://images.unsplash.com/photo-1618427012166-b0e03d490a4a?w=800&q=75&fm=jpg",
+        "description": "A dozen bite-sized donuts in holiday colours, big enough for the whole family and small enough to try every flavour."
+      },
+      {
+        "id": "p_strawberry_choc",
+        "code": "JD022101",
+        "name": "Strawberry Chocolate Donuts",
+        "priceMmk": 2800,
+        "isNew": false,
+        "discountPercent": null,
+        "imageUrl": "https://images.unsplash.com/photo-1752095809176-42e3a8dce373?w=800&q=75&fm=jpg",
+        "description": "Pink strawberry glaze finished with a dark chocolate drizzle. Our most-ordered donut, for good reason."
+      },
+      {
+        "id": "p_dalgona",
+        "code": "JD033105",
+        "name": "Dalgona Creamy Coffee",
+        "priceMmk": 4500,
+        "isNew": false,
+        "discountPercent": null,
+        "imageUrl": "https://images.unsplash.com/photo-1587462969622-b0d51d428f6d?w=800&q=75&fm=jpg",
+        "description": "Whipped coffee foam over chilled milk. Stir it in for a creamy, caffeinated treat."
+      },
+      {
+        "id": "p_glazed",
+        "code": "JD022100",
+        "name": "Classic Glazed Donut",
+        "priceMmk": 2500,
+        "isNew": false,
+        "discountPercent": null,
+        "imageUrl": "https://images.unsplash.com/photo-1597419765826-5b03fa018c18?w=800&q=75&fm=jpg",
+        "description": "Light, airy and coated in a thin sugar glaze. The one that started it all."
+      },
+      {
+        "id": "p_santa_cookies",
+        "code": "JD044110",
+        "name": "Santa's favorite cookies set",
+        "priceMmk": 12000,
+        "isNew": false,
+        "discountPercent": 20,
+        "imageUrl": "https://images.unsplash.com/photo-1610562275255-03b7fa0d4655?w=800&q=75&fm=jpg",
+        "description": "Butter cookies, gingerbread and chocolate chip, boxed for the holidays. Leave one out for Santa."
+      },
+      {
+        "id": "p_americano",
+        "code": "JD033101",
+        "name": "Iced Americano",
+        "priceMmk": 3500,
+        "isNew": false,
+        "discountPercent": 20,
+        "imageUrl": "https://images.unsplash.com/photo-1517959105821-eaf2591984ca?w=800&q=75&fm=jpg",
+        "description": "Double espresso over ice and cold water. Clean, bold and the perfect partner to anything sweet."
+      },
+      {
+        "id": "p_sprinkle",
+        "code": "JD022115",
+        "name": "Rainbow Sprinkle Donut",
+        "priceMmk": 3000,
+        "isNew": false,
+        "discountPercent": null,
+        "imageUrl": "https://images.unsplash.com/photo-1624277904878-120554c46c2d?w=800&q=75&fm=jpg",
+        "description": "Vanilla glaze buried under rainbow sprinkles. Guaranteed to make someone smile."
+      }
+    ],
+    "banners": [
+      {
+        "id": "b_new_shop",
+        "title": "We are now at Central Boulevard",
+        "badge": "New shop",
+        "style": "purple",
+        "imageUrl": "https://images.unsplash.com/photo-1705972018470-a89eda1c6ce4?w=800&q=75&fm=jpg"
+      },
+      {
+        "id": "b_hot_deal",
+        "title": "Hot deals all this week",
+        "badge": "50% off",
+        "style": "cyan",
+        "imageUrl": "https://images.unsplash.com/photo-1670307335965-02cd42292094?w=800&q=75&fm=jpg"
+      }
+    ],
+    "sections": [
+      {
+        "id": "s_seasonal",
+        "kind": "seasonal",
+        "productIds": [
+          "p_mistletoe_box",
+          "p_christmas_mini",
+          "p_santa_cookies"
+        ]
+      },
+      {
+        "id": "s_popular",
+        "kind": "popular",
+        "productIds": [
+          "p_strawberry_choc",
+          "p_dalgona",
+          "p_coconut",
+          "p_glazed"
+        ]
+      },
+      {
+        "id": "s_order_again",
+        "kind": "orderAgain",
+        "productIds": [
+          "p_santa_cookies",
+          "p_americano",
+          "p_sprinkle"
+        ]
+      }
+    ],
+    "shops": [
+      {
+        "id": "sh_myaynigone",
+        "name": "Myaynigone J'Donut",
+        "address": "2972 Pyay Road, Sanchaung Township, Yangon.",
+        "imageUrl": "https://images.unsplash.com/photo-1511081692775-05d0f180a065?w=800&q=75&fm=jpg"
+      },
+      {
+        "id": "sh_central",
+        "name": "Central Boulevard J'Donut",
+        "address": "Level 1, Central Boulevard, Bahan Township, Yangon.",
+        "imageUrl": "https://images.unsplash.com/photo-1567880905822-56f8e06fe630?w=800&q=75&fm=jpg"
+      },
+      {
+        "id": "sh_hledan",
+        "name": "Hledan J'Donut",
+        "address": "Hledan Centre, Kamayut Township, Yangon.",
+        "imageUrl": "https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=800&q=75&fm=jpg"
+      },
+      {
+        "id": "sh_junction",
+        "name": "Junction City J'Donut",
+        "address": "Bogyoke Aung San Road, Pabedan Township, Yangon.",
+        "imageUrl": "https://images.unsplash.com/photo-1770739538932-433941c1267e?w=800&q=75&fm=jpg"
+      }
+    ]
+  },
+  "error": null,
+  "meta": {
+    "version": 2,
+    "generatedAt": "2026-11-08T00:00:00Z"
+  }
+}

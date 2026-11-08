@@ -3,7 +3,7 @@
 A working slice of the J'Donuts customer app: onboarding with fake login and registration, an offline-first Home and
 Product detail, and an animated Rewards screen.
 
-> Status: auth domain and data layers done; screens start next. Sections marked _TBD_ are filled in as later phases land.
+> Status: registration flow and offline data layer done; Home, Product detail and Rewards next. Sections marked _TBD_ are filled in as later phases land.
 > The roadmap is in [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md).
 
 ## Versions
@@ -79,7 +79,34 @@ state and dependency injection:
 
 ### Offline strategy
 
-_TBD — written in Phase 4._
+The local Drift database is the single source of truth. Screens only ever read it, through
+streams, so anything written to it shows up everywhere at once.
+
+- **First launch works in airplane mode.** `assets/seed/seed.json` is loaded into the database
+  the first time anything reads it, and every seed image is bundled under `assets/images/`.
+  Seeding runs once per seed version, so later launches never overwrite local changes.
+- **The network only refreshes.** `CatalogRepository.refresh()` fetches `/v1/catalog`, writes the
+  result into the database and records the sync time. It never hands data to a screen directly.
+  If it fails, the cached data is left exactly as it was and the failure is returned as a typed
+  `NetworkFailure`.
+- **Refresh triggers.** `CatalogSyncController` refreshes when the app starts online, whenever the
+  device goes from offline to online, and on pull-to-refresh. Overlapping requests share one
+  call.
+- **Online means reachable.** `connectivity_plus` only says a network interface is up, so it is
+  paired with a DNS reachability probe. Wi-Fi with no internet counts as offline.
+- **No server, same seam.** `AssetRemoteCatalogDataSource` serves a bundled `/v1` response in the
+  `{data, error, meta}` envelope, waits like a network call and refuses to answer while offline.
+  A Dio implementation of `RemoteCatalogDataSource` replaces it in `home_providers.dart` without
+  touching anything else.
+- **Images.** After a refresh, catalogue images point at the Unsplash CDN and load through
+  `cached_network_image` with a dedicated disk cache (30 days, 300 files). If a photo is neither
+  cached nor reachable, the bundled seed copy is shown instead, then an error tile as a last
+  resort. Loading shows a shimmer skeleton.
+- **Public versus private data.** Products, banners, sections and shops are public and refreshed.
+  The member record and challenges are private to the user, so they come only from the seed.
+  Home and Rewards read the same single member record.
+- **Schema versions.** v1 held `users`. v2 adds the catalogue, loyalty and `sync_meta` tables
+  through an additive migration, covered by a test that upgrades a real v1 database.
 
 ### Animations
 
@@ -91,7 +118,9 @@ _TBD — written in Phase 8._
 
 ## Image credits
 
-_TBD — written in Phase 4._
+All product, banner, shop, avatar and reward photos are from [Unsplash](https://unsplash.com)
+and used under the [Unsplash License](https://unsplash.com/license). The onboarding donuts are
+painted in code. The design screenshots from the brief are not in this repository.
 
 ## Known gaps
 

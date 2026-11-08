@@ -1,12 +1,27 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:j_donuts/core/db/tables/catalog_tables.dart';
 import 'package:j_donuts/core/db/tables/users_table.dart';
 
 part 'app_database.g.dart';
 
 /// Schema history:
 /// - v1: `users`
-@DriftDatabase(tables: [Users])
+/// - v2: catalogue (`products`, `banners`, `sections`, `section_products`,
+///   `shops`), loyalty (`members`, `challenges`) and `sync_meta`
+@DriftDatabase(
+  tables: [
+    Users,
+    Products,
+    Banners,
+    Sections,
+    SectionProducts,
+    Shops,
+    Members,
+    Challenges,
+    SyncMeta,
+  ],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
@@ -15,15 +30,34 @@ class AppDatabase extends _$AppDatabase {
   static const String fileName = 'j_donuts';
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (migrator) => migrator.createAll(),
+    onUpgrade: (migrator, from, to) async {
+      if (from < 2) await _addCatalogTables(migrator);
+    },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
     },
   );
+
+  /// Additive only: v1 users and their sessions must survive the upgrade.
+  Future<void> _addCatalogTables(Migrator migrator) async {
+    for (final table in <TableInfo<Table, dynamic>>[
+      products,
+      banners,
+      sections,
+      sectionProducts,
+      shops,
+      members,
+      challenges,
+      syncMeta,
+    ]) {
+      await migrator.createTable(table);
+    }
+  }
 
   static QueryExecutor _openConnection() => driftDatabase(name: fileName);
 }

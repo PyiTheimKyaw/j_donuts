@@ -6,7 +6,6 @@ import 'package:j_donuts/features/auth/domain/entities/birth_date.dart';
 import 'package:j_donuts/features/auth/domain/validators/birth_date_validator.dart';
 
 void main() {
-  // Fixed "today" so age rules are deterministic: Saturday 8 Nov 2026.
   final today = DateTime(2026, 11, 8);
 
   Result<BirthDate> validate({int? year, int? month, int? day}) =>
@@ -79,7 +78,6 @@ void main() {
     });
 
     test('reports the calendar error before the age error', () {
-      // Both invalid and too young: the shape problem wins.
       expect(_ruleOf(validate(year: 2020, month: 2, day: 30)), _notADate);
     });
   });

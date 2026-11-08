@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Colour tokens lifted from the J'Donuts design screens.
-///
-/// Widgets never reference raw hex values; they read these tokens either
-/// directly or through [ThemeData] / [ColorScheme].
 abstract final class AppColors {
   // Brand
   static const Color primary = Color(0xFF4FC8EC); // cyan buttons, nav bar

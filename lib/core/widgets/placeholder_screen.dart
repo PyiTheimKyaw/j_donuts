@@ -3,8 +3,6 @@ import 'package:j_donuts/app/theme/app_colors.dart';
 import 'package:j_donuts/app/theme/app_spacing.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
 
-/// Minimal screen used for tabs that are out of scope and as a stand-in
-/// while a real screen is being built.
 class PlaceholderScreen extends StatelessWidget {
   const PlaceholderScreen({
     required this.title,

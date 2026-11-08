@@ -4,7 +4,6 @@ import 'package:j_donuts/app/router/app_router.dart';
 import 'package:j_donuts/app/theme/app_theme.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
 
-/// Root widget: theme, localisation and router.
 class JDonutsApp extends ConsumerWidget {
   const JDonutsApp({super.key});
 

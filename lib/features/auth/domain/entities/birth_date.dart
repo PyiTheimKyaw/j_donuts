@@ -1,13 +1,9 @@
 import 'package:equatable/equatable.dart';
 
-/// A calendar date of birth, free of time zone concerns.
-///
-/// Construct through `BirthDateValidator.validate`, which guarantees the
-/// components form a real date.
+/// Calendar date without a time zone. Validity is `BirthDateValidator`'s job.
 final class BirthDate extends Equatable {
   const BirthDate({required this.year, required this.month, required this.day});
 
-  /// Rebuilds a [BirthDate] from a date stored as `DateTime`.
   factory BirthDate.fromDateTime(DateTime date) =>
       BirthDate(year: date.year, month: date.month, day: date.day);
 
@@ -15,10 +11,8 @@ final class BirthDate extends Equatable {
   final int month;
   final int day;
 
-  /// Midnight, local time, on the birth date.
   DateTime toDateTime() => DateTime(year, month, day);
 
-  /// Completed years of age on [date].
   int ageOn(DateTime date) {
     var age = date.year - year;
     final birthdayPassed =

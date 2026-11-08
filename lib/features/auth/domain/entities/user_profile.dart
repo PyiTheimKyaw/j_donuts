@@ -3,7 +3,6 @@ import 'package:j_donuts/features/auth/domain/entities/birth_date.dart';
 import 'package:j_donuts/features/auth/domain/entities/person_name.dart';
 import 'package:j_donuts/features/auth/domain/entities/phone_number.dart';
 
-/// What a new user submits at the end of registration.
 final class RegistrationDetails extends Equatable {
   const RegistrationDetails({
     required this.phone,
@@ -19,7 +18,6 @@ final class RegistrationDetails extends Equatable {
   List<Object?> get props => [phone, name, birthDate];
 }
 
-/// A stored account.
 final class UserProfile extends Equatable {
   const UserProfile({
     required this.phone,

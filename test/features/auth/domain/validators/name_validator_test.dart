@@ -11,7 +11,7 @@ void main() {
     });
 
     test('accepts a Myanmar-script name with vowel signs and medials', () {
-      // ကျော်ကျော် contains letters plus combining marks (U+103B, U+1031...).
+      // Includes combining marks (U+103B, U+1031), not just letters.
       expect(NameValidator.validateFirst('ကျော်ကျော်').isSuccess, isTrue);
       expect(NameValidator.validateFirst('မြတ် နိုး').isSuccess, isTrue);
     });

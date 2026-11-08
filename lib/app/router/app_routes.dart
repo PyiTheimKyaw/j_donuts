@@ -1,5 +1,7 @@
-/// Every route path and name in one place.
 abstract final class AppRoutes {
+  /// Held only while the stored session is read at launch.
+  static const String splash = '/';
+
   // Auth flow
   static const String onboarding = '/onboarding';
   static const String phone = '/auth/phone';
@@ -20,13 +22,10 @@ abstract final class AppRoutes {
 
   static String productPath(String id) => '/product/$id';
 
-  /// Query parameter that tells the phone step whether the user is
-  /// registering or logging in.
   static const String modeParam = 'mode';
   static const String modeRegister = 'register';
   static const String modeLogin = 'login';
 
-  /// Routes a signed-out user may visit.
   static const Set<String> publicPaths = {
     onboarding,
     phone,

@@ -33,8 +33,6 @@
   "phoneInvalid": "Enter a valid Myanmar mobile number, for example 09254135592.",
   "phoneNotRegistered": "This number isn't registered yet. ",
   "registerLink": "Register",
-  "phoneAlreadyRegistered": "This number already has an account. ",
-  "logInLink": "Log in instead",
 
   "otpTitle": "Verify your number",
   "otpSubtitle": "We've sent 6 digit OTP to {phone}",

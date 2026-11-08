@@ -86,12 +86,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerLink => 'Register';
 
   @override
-  String get phoneAlreadyRegistered => 'This number already has an account. ';
-
-  @override
-  String get logInLink => 'Log in instead';
-
-  @override
   String get otpTitle => 'Verify your number';
 
   @override

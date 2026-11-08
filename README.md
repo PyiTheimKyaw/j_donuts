@@ -1,7 +1,6 @@
 # J'Donuts
 
-A working slice of the J'Donuts customer app, built for the Madivizion senior Flutter
-code test: onboarding with fake login and registration, an offline-first Home and
+A working slice of the J'Donuts customer app: onboarding with fake login and registration, an offline-first Home and
 Product detail, and an animated Rewards screen.
 
 > Status: Phase 0 (foundation). Sections marked _TBD_ are filled in as later phases land.

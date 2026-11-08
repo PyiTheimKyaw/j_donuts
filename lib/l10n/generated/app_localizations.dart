@@ -236,18 +236,6 @@ abstract class AppLocalizations {
   /// **'Register'**
   String get registerLink;
 
-  /// No description provided for @phoneAlreadyRegistered.
-  ///
-  /// In en, this message translates to:
-  /// **'This number already has an account. '**
-  String get phoneAlreadyRegistered;
-
-  /// No description provided for @logInLink.
-  ///
-  /// In en, this message translates to:
-  /// **'Log in instead'**
-  String get logInLink;
-
   /// No description provided for @otpTitle.
   ///
   /// In en, this message translates to:

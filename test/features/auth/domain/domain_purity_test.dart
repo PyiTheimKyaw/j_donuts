@@ -2,10 +2,6 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-/// Guards the architecture rule that the domain layer is pure Dart.
-///
-/// If a `package:flutter/...` import sneaks into `lib/features/*/domain`,
-/// this test names the offending file.
 void main() {
   test('domain layers contain no Flutter imports', () {
     final offenders = <String>[];

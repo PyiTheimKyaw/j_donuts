@@ -1,0 +1,9 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          # ISO-8601 text instead of unix seconds: readable in a SQLite browser
+          # and free of time-zone surprises for calendar dates.
+          store_date_time_values_as_text: true
+          named_parameters: true

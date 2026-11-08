@@ -1,22 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:j_donuts/app/router/app_routes.dart';
+import 'package:j_donuts/app/router/auth_redirect.dart';
 import 'package:j_donuts/core/widgets/placeholder_screen.dart';
+import 'package:j_donuts/core/widgets/splash_screen.dart';
+import 'package:j_donuts/features/auth/presentation/session/session_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_router.g.dart';
 
-/// Application router.
-///
-/// Phase 0 wires every path to a placeholder so the navigation graph and the
-/// auth redirect seam exist before the screens do. Real screens replace the
-/// builders feature by feature.
 @riverpod
 GoRouter appRouter(Ref ref) {
+  final refresh = _SessionRefresh();
+  ref
+    ..listen(sessionControllerProvider, (_, _) => refresh.notify())
+    ..onDispose(refresh.dispose);
+
   return GoRouter(
-    initialLocation: AppRoutes.onboarding,
-    redirect: (context, state) => _redirect(ref, state),
+    initialLocation: AppRoutes.splash,
+    refreshListenable: refresh,
+    redirect: (context, state) => resolveAuthRedirect(
+      session: ref.read(sessionControllerProvider),
+      location: state.matchedLocation,
+    ),
     routes: [
+      GoRoute(
+        path: AppRoutes.splash,
+        builder: (context, state) => const SplashScreen(),
+      ),
       ..._authRoutes,
       ..._shellRoutes,
       GoRoute(
@@ -32,10 +43,10 @@ GoRouter appRouter(Ref ref) {
   );
 }
 
-/// Auth guard. Returns the path to send the user to, or `null` to allow.
-///
-/// Session awareness arrives in Phase 2; until then nothing redirects.
-String? _redirect(Ref ref, GoRouterState state) => null;
+/// go_router only accepts a Listenable for refresh.
+final class _SessionRefresh extends ChangeNotifier {
+  void notify() => notifyListeners();
+}
 
 List<RouteBase> get _authRoutes => [
   _placeholder(AppRoutes.onboarding, 'Onboarding'),

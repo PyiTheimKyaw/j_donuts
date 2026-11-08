@@ -3,7 +3,7 @@
 A working slice of the J'Donuts customer app: onboarding with fake login and registration, an offline-first Home and
 Product detail, and an animated Rewards screen.
 
-> Status: Phase 0 (foundation). Sections marked _TBD_ are filled in as later phases land.
+> Status: auth domain and data layers done; screens start next. Sections marked _TBD_ are filled in as later phases land.
 > The roadmap is in [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md).
 
 ## Versions
@@ -60,7 +60,22 @@ lib/
 
 ### State management: Riverpod
 
-_TBD — rationale written in Phase 2._
+Riverpod 3 with code generation (`riverpod_annotation` + `riverpod_generator`) handles both
+state and dependency injection:
+
+- **One composition root per feature.** `lib/features/auth/auth_providers.dart` is the only
+  file that knows `AuthRepository` is backed by `FakeAuthRepository`. Swapping in a real API
+  is a one-line change there and touches no screen.
+- **No services created inside widgets.** Repositories, data sources and use cases are all
+  providers; widgets read them through `ref`.
+- **Testable by override.** Widget and integration tests pass `ProviderScope(overrides: ...)`
+  with an in-memory Drift database, an in-memory key-value store and zero fake latency
+  (see `test/helpers/test_overrides.dart`). Nothing in the tests touches a device plugin.
+- **Session as a single async source of truth.** `SessionController` is a keep-alive
+  `AsyncNotifier<AuthSession?>`: loading while secure storage is read at launch, then
+  `null` or a session. go_router's `refreshListenable` is driven by it, and the redirect rule
+  itself (`lib/app/router/auth_redirect.dart`) is a pure function with its own unit tests.
+
 
 ### Offline strategy
 

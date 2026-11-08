@@ -3,7 +3,6 @@ import 'package:j_donuts/app/theme/app_colors.dart';
 import 'package:j_donuts/app/theme/app_spacing.dart';
 import 'package:j_donuts/app/theme/app_typography.dart';
 
-/// Builds the single light [ThemeData] used by the app from design tokens.
 abstract final class AppTheme {
   static ThemeData light() {
     const scheme = ColorScheme.light(

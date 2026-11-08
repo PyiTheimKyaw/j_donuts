@@ -49,8 +49,8 @@ also exercises the Myanmar-script name validation and the text-scale layout chec
 | # | Branch | Scope | Status |
 |---|---|---|---|
 | 0 | `feat/foundation` | pubspec, lints, CI, theme tokens, motion constants, `Result`/`Failure`, router skeleton, l10n (en, my) | merged |
-| 1 | `feat/auth-domain` | entities, validators, repository contracts, use cases, unit tests | in review |
-| 2 | `feat/auth-data-session` | Drift v1 with `Users`, `FakeAuthRepository`, secure session store, router redirect guard | |
+| 1 | `feat/auth-domain` | entities, validators, repository contracts, use cases, unit tests | merged |
+| 2 | `feat/auth-data-session` | Drift v1 with `Users`, `FakeAuthRepository`, secure session store, router redirect guard | in review |
 | 3a | `feat/onboarding-phone` | shared auth scaffold, button, text field, progress ring; onboarding and phone screens | |
 | 3b | `feat/otp` | OTP boxes, shake, lockout, resend countdown | |
 | 3c | `feat/name-dob` | name and date-of-birth steps, ring to check morph, registration completes | |

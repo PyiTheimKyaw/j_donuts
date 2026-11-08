@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:j_donuts/features/auth/domain/entities/phone_number.dart';
 
-/// Proof that a user is signed in on this device.
 final class AuthSession extends Equatable {
   const AuthSession({required this.phone, required this.startedAt});
 
@@ -12,31 +11,33 @@ final class AuthSession extends Equatable {
   List<Object?> get props => [phone, startedAt];
 }
 
-/// Why the user is entering a phone number.
 enum AuthIntent {
-  /// "Let's get started": a new account is expected, but an existing one is
-  /// welcome and simply logs in after OTP.
+  /// An existing account is not an error here; it simply logs in after OTP.
   register,
 
-  /// "Already have an account? Log in": the number must exist.
+  /// The number must already be registered.
   logIn,
 }
 
-/// Outcome of a correct one-time code.
-sealed class OtpVerification {
+sealed class OtpVerification extends Equatable {
   const OtpVerification();
 }
 
-/// The number already has an account; a session has been started.
+/// Carries the session the repository has already started.
 final class ReturningUser extends OtpVerification {
   const ReturningUser(this.session);
 
   final AuthSession session;
+
+  @override
+  List<Object?> get props => [session];
 }
 
-/// The number is new; registration continues with name and date of birth.
 final class NewUser extends OtpVerification {
   const NewUser(this.phone);
 
   final PhoneNumber phone;
+
+  @override
+  List<Object?> get props => [phone];
 }

@@ -8,29 +8,23 @@ part of 'app_router.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Application router.
+/// Application router with the auth guard.
 ///
-/// Phase 0 wires every path to a placeholder so the navigation graph and the
-/// auth redirect seam exist before the screens do. Real screens replace the
-/// builders feature by feature.
+/// Screens still mapped to placeholders are replaced feature by feature.
 
 @ProviderFor(appRouter)
 final appRouterProvider = AppRouterProvider._();
 
-/// Application router.
+/// Application router with the auth guard.
 ///
-/// Phase 0 wires every path to a placeholder so the navigation graph and the
-/// auth redirect seam exist before the screens do. Real screens replace the
-/// builders feature by feature.
+/// Screens still mapped to placeholders are replaced feature by feature.
 
 final class AppRouterProvider
     extends $FunctionalProvider<GoRouter, GoRouter, GoRouter>
     with $Provider<GoRouter> {
-  /// Application router.
+  /// Application router with the auth guard.
   ///
-  /// Phase 0 wires every path to a placeholder so the navigation graph and the
-  /// auth redirect seam exist before the screens do. Real screens replace the
-  /// builders feature by feature.
+  /// Screens still mapped to placeholders are replaced feature by feature.
   AppRouterProvider._()
     : super(
         from: null,
@@ -64,4 +58,4 @@ final class AppRouterProvider
   }
 }
 
-String _$appRouterHash() => r'23a0aee0b60527659da897a58cbda5f03263fb42';
+String _$appRouterHash() => r'4214fe18b3add2a3d106999ba34d682b41cbf5ab';

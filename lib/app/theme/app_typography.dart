@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:j_donuts/app/theme/app_colors.dart';
 
-/// Type scale built on the bundled Lexend variable font.
 abstract final class AppTypography {
   static const String fontFamily = 'Lexend';
 

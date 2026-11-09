@@ -27,8 +27,10 @@ enum ProductTileShape {
     SectionKind.orderAgain => square,
   };
 
-  /// Image, gap and a two-line name.
-  double get rowHeight => imageHeight + AppSpacing.sm + _nameBlockHeight;
+  /// Image, gap and a two-line name. The name block grows with the user's
+  /// text size; a fixed height clips the second line at large text scales.
+  double rowHeight(TextScaler textScaler) =>
+      imageHeight + AppSpacing.sm + textScaler.scale(_nameBlockHeight);
 
   static const double _nameBlockHeight = 48;
 }
@@ -45,18 +47,23 @@ class SectionHeader extends StatelessWidget {
   final VoidCallback? onSeeAll;
 
   static const double _arrowSize = 28;
+  static const double _arrowIconSize = 20;
+
+  /// The trailing IconButton carries its own inset, so the right edge is
+  /// pulled in to keep the arrow optically aligned with the gutter.
+  static const EdgeInsets _padding = EdgeInsets.fromLTRB(
+    AppSpacing.gutter,
+    0,
+    AppSpacing.gutter - AppSpacing.sm,
+    AppSpacing.md,
+  );
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.gutter,
-        0,
-        AppSpacing.gutter - AppSpacing.sm,
-        AppSpacing.md,
-      ),
+      padding: _padding,
       child: Row(
         children: [
           Expanded(child: Text(title, style: AppTypography.title)),
@@ -70,7 +77,10 @@ class SectionHeader extends StatelessWidget {
                 color: AppColors.surface,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.chevron_right_rounded, size: 20),
+              child: const Icon(
+                Icons.chevron_right_rounded,
+                size: _arrowIconSize,
+              ),
             ),
           ),
         ],
@@ -94,7 +104,7 @@ class ProductRow extends StatelessWidget {
     final shape = ProductTileShape.forSection(section.kind);
 
     return SizedBox(
-      height: shape.rowHeight,
+      height: shape.rowHeight(MediaQuery.textScalerOf(context)),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter),
@@ -144,31 +154,7 @@ class ProductTile extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                width: shape.imageWidth,
-                height: shape.imageHeight,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Hero(
-                      tag: heroTag,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(AppRadii.lg),
-                        child: ColoredBox(
-                          color: AppColors.surface,
-                          child: AppImage(product.image),
-                        ),
-                      ),
-                    ),
-                    if (product.hasDiscount)
-                      Positioned(
-                        right: AppSpacing.sm,
-                        bottom: AppSpacing.sm,
-                        child: DiscountBadge(percent: product.discountPercent!),
-                      ),
-                  ],
-                ),
-              ),
+              _TileImage(product: product, shape: shape, heroTag: heroTag),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 product.name,
@@ -179,6 +165,47 @@ class ProductTile extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _TileImage extends StatelessWidget {
+  const _TileImage({
+    required this.product,
+    required this.shape,
+    required this.heroTag,
+  });
+
+  final Product product;
+  final ProductTileShape shape;
+  final String heroTag;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: shape.imageWidth,
+      height: shape.imageHeight,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Hero(
+            tag: heroTag,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadii.lg),
+              child: ColoredBox(
+                color: AppColors.surface,
+                child: AppImage(product.image),
+              ),
+            ),
+          ),
+          if (product.hasDiscount)
+            Positioned(
+              right: AppSpacing.sm,
+              bottom: AppSpacing.sm,
+              child: DiscountBadge(percent: product.discountPercent!),
+            ),
+        ],
       ),
     );
   }
@@ -219,11 +246,12 @@ class ProductRowSkeleton extends StatelessWidget {
 
   static const int _placeholderCount = 3;
   static const double _nameLineHeight = 16;
+  static const double _nameWidthFraction = 0.7;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: shape.rowHeight,
+      height: shape.rowHeight(MediaQuery.textScalerOf(context)),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const NeverScrollableScrollPhysics(),
@@ -239,7 +267,10 @@ class ProductRowSkeleton extends StatelessWidget {
               radius: AppRadii.lg,
             ),
             const SizedBox(height: AppSpacing.sm),
-            Skeleton(width: shape.imageWidth * 0.7, height: _nameLineHeight),
+            Skeleton(
+              width: shape.imageWidth * _nameWidthFraction,
+              height: _nameLineHeight,
+            ),
           ],
         ),
       ),

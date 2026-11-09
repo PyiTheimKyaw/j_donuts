@@ -57,9 +57,9 @@ also exercises the Myanmar-script name validation and the text-scale layout chec
 | 4 | `feat/offline-data` | Drift v2 catalogue tables, seed JSON and images, connectivity with reachability, image widget | merged |
 | 5 | `feat/home-shell` | bottom nav with sliding pill, welcome, home sections with skeletons, settings log out | merged |
 | 6 | `feat/product-detail` | hero transition, MMK formatting, animated quantity stepper, live total | merged |
-| 7 | `feat/rewards` | points ring, tier ladder, tabs, challenge art with CustomPainter, badge pop | in review |
-| 8 | `test/widget-integration-tests` | remaining widget tests, register-to-product integration test | |
-| 9 | `chore/polish-readme-builds` | reduce motion and text scale pass, profile run, README, release builds | |
+| 7 | `feat/rewards` | points ring, tier ladder, tabs, challenge art with CustomPainter, badge pop | merged |
+| 8 | `test/widget-integration-tests` | remaining widget tests, register-to-product integration test | merged |
+| 9 | `chore/polish-readme-builds` | reduce motion and text scale pass, profile run, README, release builds | merged |
 
 ### Phase notes
 

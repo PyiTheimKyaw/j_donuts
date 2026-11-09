@@ -46,4 +46,27 @@ void main() {
     );
     expect(container.read(welcomePendingProvider), isFalse);
   });
+
+  testWidgets('tiles are staggered photos that bleed off the top edge', (
+    tester,
+  ) async {
+    await registerToWelcome(tester);
+
+    final tiles = find.descendant(
+      of: find.byType(WelcomeScreen),
+      matching: find.byWidgetPredicate(
+        (widget) =>
+            widget is Image &&
+            widget.image is AssetImage &&
+            (widget.image as AssetImage).assetName.contains('welcome/tile_'),
+      ),
+    );
+    expect(tiles, findsNWidgets(WelcomeTile.values.length));
+    expect(find.byType(ShaderMask), findsOneWidget);
+
+    final topLeft = tester.getRect(tiles.at(0));
+    final topRight = tester.getRect(tiles.at(1));
+    expect(topLeft.top, lessThan(0));
+    expect(topRight.top, greaterThan(topLeft.top));
+  });
 }

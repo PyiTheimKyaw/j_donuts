@@ -9,10 +9,11 @@ import 'package:j_donuts/features/home/domain/entities/product.dart';
 import 'package:j_donuts/features/home/presentation/home_labels.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
 
-/// Seasonal boxes are photographed wide, everything else as single items,
-/// so the two tile shapes follow the design.
+/// Seasonal boxes are photographed wide; Popular uses tall cards to give its
+/// bestsellers more presence; Order again stays compact, as in the design.
 enum ProductTileShape {
   landscape(imageWidth: 240, imageHeight: 160),
+  portrait(imageWidth: 150, imageHeight: 200),
   square(imageWidth: 150, imageHeight: 150);
 
   ProductTileShape({required this.imageWidth, required this.imageHeight});
@@ -20,8 +21,11 @@ enum ProductTileShape {
   final double imageWidth;
   final double imageHeight;
 
-  static ProductTileShape forSection(SectionKind kind) =>
-      kind == SectionKind.seasonal ? landscape : square;
+  static ProductTileShape forSection(SectionKind kind) => switch (kind) {
+    SectionKind.seasonal => landscape,
+    SectionKind.popular => portrait,
+    SectionKind.orderAgain => square,
+  };
 
   /// Image, gap and a two-line name.
   double get rowHeight => imageHeight + AppSpacing.sm + _nameBlockHeight;

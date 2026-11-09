@@ -20,7 +20,7 @@ import 'package:j_donuts/features/home/presentation/widgets/member_header.dart';
 import 'package:j_donuts/features/home/presentation/widgets/nearby_shops.dart';
 import 'package:j_donuts/features/home/presentation/widgets/product_section.dart';
 import 'package:j_donuts/features/home/presentation/widgets/section_state.dart';
-import 'package:j_donuts/features/shell/presentation/app_bottom_nav.dart';
+import 'package:j_donuts/features/home/presentation/widgets/shops_scenery.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -44,8 +44,9 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isOffline = ref.watch(isOnlineProvider).value == false;
-    final navClearance =
-        AppBottomNav.barHeight + MediaQuery.paddingOf(context).bottom;
+    // The shell's Scaffold uses extendBody, so its bottom padding already
+    // includes the floating nav bar; adding the bar again leaves a gap.
+    final navClearance = MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
       backgroundColor: AppColors.scaffold,
@@ -57,13 +58,7 @@ class HomeScreen extends ConsumerWidget {
             SliverToBoxAdapter(child: OfflineBanner(isOffline: isOffline)),
             const SliverToBoxAdapter(child: _HeaderBlock()),
             const SliverToBoxAdapter(child: _SectionsBlock()),
-            const SliverToBoxAdapter(child: _ShopsBlock()),
-            SliverToBoxAdapter(
-              child: ColoredBox(
-                color: AppColors.primary,
-                child: SizedBox(height: navClearance),
-              ),
-            ),
+            SliverToBoxAdapter(child: _ShopsBlock(navClearance: navClearance)),
           ],
         ),
       ),
@@ -213,32 +208,48 @@ class _SectionFrame extends StatelessWidget {
   }
 }
 
+/// Runs to the bottom of the scroll view and under the floating nav, so the
+/// painted grass meets the pink band instead of stopping above the bar.
 class _ShopsBlock extends ConsumerWidget {
-  const _ShopsBlock();
+  const _ShopsBlock({required this.navClearance});
+
+  final double navClearance;
+
+  /// Cards stand on the grass: it starts this far above the cards' bottom.
+  static const double _cardsOnGrass = 24;
+  static const double _gapAboveNav = AppSpacing.xl;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final shops = ref.watch(nearbyShopsProvider);
 
     return Container(
+      key: const Key('nearby-shops-block'),
       margin: const EdgeInsets.only(top: AppSpacing.xxl),
+      clipBehavior: Clip.antiAlias,
       decoration: const BoxDecoration(
         color: AppColors.primary,
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadii.xl)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          NearbyShopsHeader(shopCount: shops.value?.length),
-          SectionState(
-            value: shops,
-            skeleton: const NearbyShopsSkeleton(),
-            isEmpty: (value) => value.isEmpty,
-            onRetry: () => ref.invalidate(nearbyShopsProvider),
-            builder: (value) => NearbyShops(shops: value),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-        ],
+      child: CustomPaint(
+        painter: ShopsSceneryPainter(
+          groundHeight: navClearance + _gapAboveNav + _cardsOnGrass,
+          sproutLine: navClearance + _gapAboveNav * 0.4,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            NearbyShopsHeader(shopCount: shops.value?.length),
+            SectionState(
+              value: shops,
+              skeleton: const NearbyShopsSkeleton(),
+              isEmpty: (value) => value.isEmpty,
+              onRetry: () => ref.invalidate(nearbyShopsProvider),
+              builder: (value) => NearbyShops(shops: value),
+            ),
+            SizedBox(height: navClearance + _gapAboveNav),
+          ],
+        ),
       ),
     );
   }

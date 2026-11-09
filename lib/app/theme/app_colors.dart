@@ -52,6 +52,17 @@ abstract final class AppColors {
   static const Color icingWhite = Color(0xFFFFF4F7);
   static const Color googleBlue = Color(0xFF4285F4);
   static const Color facebookBlue = Color(0xFF1877F2);
+  static const Color tileShadow = Color(0x1A1F1F2E);
+
+  // Nearby-shops scenery
+  static const Color sceneryCloud = Color(0xFFFBF2E3);
+  static const Color sceneryCloudShade = Color(0xFFE8D4B6);
+  static const Color sceneryHillFar = Color(0xFF8ECFA0);
+  static const Color sceneryTreeDark = Color(0xFF2F7D5B);
+  static const Color sceneryTreeLight = Color(0xFF4FA06F);
+  static const Color sceneryGrass = Color(0xFF6DBB5E);
+  static const Color sceneryGrassLight = Color(0xFF93D173);
+  static const Color scenerySprout = Color(0xFFCFE46A);
 
   // Disabled
   static const Color disabledFill = Color(0xFFE2E4E8);

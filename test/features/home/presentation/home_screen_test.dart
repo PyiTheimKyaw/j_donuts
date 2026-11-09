@@ -5,6 +5,7 @@ import 'package:j_donuts/features/home/presentation/screens/home_screen.dart';
 import 'package:j_donuts/features/home/presentation/widgets/banner_carousel.dart';
 import 'package:j_donuts/features/home/presentation/widgets/nearby_shops.dart';
 import 'package:j_donuts/features/home/presentation/widgets/product_section.dart';
+import 'package:j_donuts/features/home/presentation/widgets/shops_scenery.dart';
 
 import '../../../helpers/pump_app.dart';
 import '../../../helpers/signed_in_app.dart';
@@ -102,5 +103,47 @@ void main() {
       expect(find.byType(HomeScreen), findsNothing);
       expect(find.text('Product p_mistletoe_box'), findsOneWidget);
     });
+  });
+
+  testWidgets('Popular tiles are taller than Order again tiles', (
+    tester,
+  ) async {
+    await tester.pumpSignedInApp();
+    final popularTile = find.widgetWithText(
+      ProductTile,
+      'Strawberry Chocolate Donuts',
+    );
+    await tester.scrollUntilVisible(
+      popularTile,
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+
+    final tile = tester.widget<ProductTile>(popularTile);
+    expect(tile.shape, ProductTileShape.portrait);
+    expect(
+      ProductTileShape.portrait.imageHeight,
+      greaterThan(ProductTileShape.square.imageHeight),
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('nearby shops sit on the illustrated scenery', (tester) async {
+    await tester.pumpSignedInApp();
+    final block = find.byKey(const Key('nearby-shops-block'));
+    await tester.scrollUntilVisible(
+      find.byType(NearbyShops),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+
+    final scenery = find.descendant(
+      of: block,
+      matching: find.byWidgetPredicate(
+        (widget) =>
+            widget is CustomPaint && widget.painter is ShopsSceneryPainter,
+      ),
+    );
+    expect(scenery, findsOneWidget);
   });
 }

@@ -31,20 +31,45 @@ class AppBottomNav extends StatelessWidget {
   static const double pillWidthInSlots = 1.7;
   static const double iconSize = 24;
 
+  /// The bar floats inside the screen edges over a pink band that fills the
+  /// bottom of the screen, as in the design.
+  static const double sideMargin = AppSpacing.lg;
+  static const double pinkBandFraction = 0.45;
+
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.paddingOf(context).bottom;
 
-    return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadii.xl)),
-      ),
-      margin: const EdgeInsets.symmetric(horizontal: AppRadii.xl),
-      padding: EdgeInsets.only(bottom: bottomInset),
-      child: SizedBox(
-        height: barHeight,
-        child: LayoutBuilder(builder: _buildBar),
+    return SizedBox(
+      height: barHeight + bottomInset,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: barHeight * pinkBandFraction + bottomInset,
+            child: const ColoredBox(
+              key: Key('nav-pink-band'),
+              color: AppColors.accent,
+            ),
+          ),
+          Positioned.fill(
+            left: sideMargin,
+            right: sideMargin,
+            child: Container(
+              key: const Key('nav-bar-surface'),
+              decoration: const BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(AppRadii.xl),
+                ),
+              ),
+              padding: EdgeInsets.only(bottom: bottomInset),
+              child: LayoutBuilder(builder: _buildBar),
+            ),
+          ),
+        ],
       ),
     );
   }

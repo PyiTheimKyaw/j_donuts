@@ -82,4 +82,22 @@ void main() {
       expect(container.read(sessionControllerProvider).value, isNull);
     });
   });
+
+  testWidgets(
+    'nav floats inside the screen edges over a full-width pink band',
+    (tester) async {
+      await tester.pumpSignedInApp();
+      final screenWidth =
+          tester.view.physicalSize.width / tester.view.devicePixelRatio;
+
+      final surface = tester.getRect(find.byKey(const Key('nav-bar-surface')));
+      final band = tester.getRect(find.byKey(const Key('nav-pink-band')));
+
+      expect(surface.left, AppBottomNav.sideMargin);
+      expect(surface.right, screenWidth - AppBottomNav.sideMargin);
+      expect(band.left, 0);
+      expect(band.right, screenWidth);
+      expect(band.bottom, surface.bottom);
+    },
+  );
 }

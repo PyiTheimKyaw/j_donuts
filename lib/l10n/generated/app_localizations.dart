@@ -530,6 +530,12 @@ abstract class AppLocalizations {
   /// **'Increase quantity'**
   String get increaseQuantity;
 
+  /// No description provided for @addedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get addedShort;
+
   /// No description provided for @addToCart.
   ///
   /// In en, this message translates to:

@@ -121,6 +121,7 @@
   "quantity": "Quantity",
   "decreaseQuantity": "Decrease quantity",
   "increaseQuantity": "Increase quantity",
+  "addedShort": "Added",
   "addToCart": "Add to cart",
   "addedToCart": "{count, plural, =1{Added 1 item to your cart} other{Added {count} items to your cart}}",
   "@addedToCart": {

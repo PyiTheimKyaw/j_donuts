@@ -6,6 +6,7 @@ import 'package:j_donuts/features/home/presentation/widgets/banner_carousel.dart
 import 'package:j_donuts/features/home/presentation/widgets/nearby_shops.dart';
 import 'package:j_donuts/features/home/presentation/widgets/product_section.dart';
 import 'package:j_donuts/features/home/presentation/widgets/shops_scenery.dart';
+import 'package:j_donuts/features/product/presentation/screens/product_detail_screen.dart';
 
 import '../../../helpers/pump_app.dart';
 import '../../../helpers/signed_in_app.dart';
@@ -101,7 +102,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(HomeScreen), findsNothing);
-      expect(find.text('Product p_mistletoe_box'), findsOneWidget);
+      expect(find.byType(ProductDetailScreen), findsOneWidget);
     });
   });
 

@@ -36,6 +36,23 @@ abstract final class AppColors {
   static const Color tierSilver = Color(0xFFB8BCC4);
   static const Color tierGold = Color(0xFFE7C45A);
   static const Color tierPlatinum = Color(0xFF9ED8F0);
+  static const Color tierSilverShade = Color(0xFF8E939C);
+  static const Color tierGoldShade = Color(0xFFC9A332);
+  static const Color tierPlatinumShade = Color(0xFF5FB6DA);
+  static const Color ladderTrack = Color(0xFFE6E7EB);
+
+  // Points ring
+  static const Color ringTrack = Color(0xFFEFEFF2);
+  static const Color ringIcingLight = Color(0xFFF59AC6);
+  static const Color ringIcingDeep = Color(0xFFE2549A);
+  static const Color ringSprinkle = Color(0xFFFFE3F0);
+  static const Color ringIcingEdge = Color(0xFFC93E83);
+  static const Color ringIcingShadow = Color(0x55B23472);
+  static const Color ringHighlight = Color(0xCCFFFFFF);
+  static const Color ringHighlightClear = Color(0x00FFFFFF);
+  static const Color ringTrackShade = Color(0xFFE2E3E8);
+  static const Color sprinkleWhite = Color(0xFFFFF8FB);
+  static const Color sprinkleShadow = Color(0x66A8306A);
 
   // Illustration
   static const Color pastelCyan = Color(0xFF7FD9EC);

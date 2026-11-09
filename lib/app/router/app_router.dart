@@ -15,6 +15,7 @@ import 'package:j_donuts/features/auth/presentation/session/welcome_pending.dart
 import 'package:j_donuts/features/home/presentation/screens/home_screen.dart';
 import 'package:j_donuts/features/home/presentation/screens/welcome_screen.dart';
 import 'package:j_donuts/features/product/presentation/screens/product_detail_screen.dart';
+import 'package:j_donuts/features/rewards/presentation/screens/rewards_screen.dart';
 import 'package:j_donuts/features/shell/presentation/app_shell.dart';
 import 'package:j_donuts/features/shell/presentation/settings_screen.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
@@ -85,13 +86,7 @@ List<RouteBase> get _shellRoutes => [
         AppShell(navigationShell: navigationShell),
     branches: [
       _branch(AppRoutes.home, (context, state) => const HomeScreen()),
-      _branch(
-        AppRoutes.rewards,
-        (context, state) => const PlaceholderScreen(
-          title: 'Rewards',
-          icon: Icons.workspace_premium_outlined,
-        ),
-      ),
+      _branch(AppRoutes.rewards, (context, state) => const RewardsScreen()),
       _branch(
         AppRoutes.orders,
         (context, state) => PlaceholderScreen(

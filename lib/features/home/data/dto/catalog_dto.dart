@@ -84,6 +84,7 @@ abstract class MemberDto with _$MemberDto {
     required int pointsToNextTier,
     required int notificationCount,
     required int rewardCount,
+    @Default(0) int tierStartPoints,
   }) = _MemberDto;
 
   factory MemberDto.fromJson(Map<String, dynamic> json) =>

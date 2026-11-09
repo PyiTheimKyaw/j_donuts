@@ -296,6 +296,20 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get tierAchieved => 'Achieved';
+
+  @override
+  String rewardsAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rewards available',
+      one: '1 reward available',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get tierSoon => 'You\'ll be here soon';
 
   @override

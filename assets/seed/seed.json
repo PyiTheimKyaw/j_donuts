@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "catalog": {
     "products": [
       {
@@ -174,14 +174,15 @@
     "totalPoints": 680000,
     "pointsToNextTier": 500,
     "notificationCount": 2,
-    "rewardCount": 3
+    "rewardCount": 3,
+    "tierStartPoints": 678800
   },
   "challenges": [
     {
       "id": "c_coco_complete",
       "title": "Eat 4 Coco donuts",
       "artwork": "donut",
-      "imageUrl": "asset://images/rewards/donut_pink.jpg",
+      "imageUrl": "asset://images/rewards/donut_2.png",
       "progress": 4,
       "goal": 4,
       "rewardPoints": 100,
@@ -191,7 +192,7 @@
       "id": "c_coco_started",
       "title": "Eat 4 Coco donuts",
       "artwork": "donut",
-      "imageUrl": "asset://images/rewards/donut_pink.jpg",
+      "imageUrl": "asset://images/rewards/donut_2.png",
       "progress": 1,
       "goal": 4,
       "rewardPoints": 100,
@@ -201,7 +202,7 @@
       "id": "c_americano",
       "title": "Drink 12 cups americano",
       "artwork": "coffee",
-      "imageUrl": "asset://images/rewards/coffee_cup.jpg",
+      "imageUrl": "asset://images/rewards/coffee_cup.png",
       "progress": 9,
       "goal": 12,
       "rewardPoints": 100,

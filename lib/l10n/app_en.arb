@@ -143,6 +143,11 @@
       "tier": { "type": "String" }
     }
   },
+  "tierAchieved": "Achieved",
+  "rewardsAvailable": "{count, plural, =1{1 reward available} other{{count} rewards available}}",
+  "@rewardsAvailable": {
+    "placeholders": { "count": { "type": "int" } }
+  },
   "tierSoon": "You'll be here soon",
   "eatMoreEarnMore": "Eat more earn more",
   "gift": "Gift",

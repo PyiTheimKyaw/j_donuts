@@ -76,6 +76,10 @@ class Members extends Table {
   TextColumn get tier => text()();
   IntColumn get totalPoints => integer()();
   IntColumn get pointsToNextTier => integer()();
+
+  /// v3. Where the current tier began, so progress toward the next tier is a
+  /// fraction rather than just a remaining count.
+  IntColumn get tierStartPoints => integer().withDefault(const Constant(0))();
   IntColumn get notificationCount => integer()();
   IntColumn get rewardCount => integer()();
 

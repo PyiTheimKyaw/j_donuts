@@ -1453,7 +1453,7 @@ as List<ShopDto>,
 /// @nodoc
 mixin _$MemberDto {
 
- String get id; String get name; String get photoUrl; String get tier; int get totalPoints; int get pointsToNextTier; int get notificationCount; int get rewardCount;
+ String get id; String get name; String get photoUrl; String get tier; int get totalPoints; int get pointsToNextTier; int get notificationCount; int get rewardCount; int get tierStartPoints;
 /// Create a copy of MemberDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1467,20 +1467,20 @@ $MemberDtoCopyWith<MemberDto> get copyWith => _$MemberDtoCopyWithImpl<MemberDto>
 @override
 bool operator ==(Object other) {
   final _this = this as MemberDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.photoUrl, _this.photoUrl) || other.photoUrl == _this.photoUrl)&&(identical(other.tier, _this.tier) || other.tier == _this.tier)&&(identical(other.totalPoints, _this.totalPoints) || other.totalPoints == _this.totalPoints)&&(identical(other.pointsToNextTier, _this.pointsToNextTier) || other.pointsToNextTier == _this.pointsToNextTier)&&(identical(other.notificationCount, _this.notificationCount) || other.notificationCount == _this.notificationCount)&&(identical(other.rewardCount, _this.rewardCount) || other.rewardCount == _this.rewardCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.photoUrl, _this.photoUrl) || other.photoUrl == _this.photoUrl)&&(identical(other.tier, _this.tier) || other.tier == _this.tier)&&(identical(other.totalPoints, _this.totalPoints) || other.totalPoints == _this.totalPoints)&&(identical(other.pointsToNextTier, _this.pointsToNextTier) || other.pointsToNextTier == _this.pointsToNextTier)&&(identical(other.notificationCount, _this.notificationCount) || other.notificationCount == _this.notificationCount)&&(identical(other.rewardCount, _this.rewardCount) || other.rewardCount == _this.rewardCount)&&(identical(other.tierStartPoints, _this.tierStartPoints) || other.tierStartPoints == _this.tierStartPoints));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as MemberDto;
-  return Object.hash(runtimeType,_this.id,_this.name,_this.photoUrl,_this.tier,_this.totalPoints,_this.pointsToNextTier,_this.notificationCount,_this.rewardCount);
+  return Object.hash(runtimeType,_this.id,_this.name,_this.photoUrl,_this.tier,_this.totalPoints,_this.pointsToNextTier,_this.notificationCount,_this.rewardCount,_this.tierStartPoints);
 }
 
 @override
 String toString() {
   final _this = this as MemberDto;
-  return 'MemberDto(id: ${_this.id}, name: ${_this.name}, photoUrl: ${_this.photoUrl}, tier: ${_this.tier}, totalPoints: ${_this.totalPoints}, pointsToNextTier: ${_this.pointsToNextTier}, notificationCount: ${_this.notificationCount}, rewardCount: ${_this.rewardCount})';
+  return 'MemberDto(id: ${_this.id}, name: ${_this.name}, photoUrl: ${_this.photoUrl}, tier: ${_this.tier}, totalPoints: ${_this.totalPoints}, pointsToNextTier: ${_this.pointsToNextTier}, notificationCount: ${_this.notificationCount}, rewardCount: ${_this.rewardCount}, tierStartPoints: ${_this.tierStartPoints})';
 }
 
 
@@ -1491,7 +1491,7 @@ abstract mixin class $MemberDtoCopyWith<$Res>  {
   factory $MemberDtoCopyWith(MemberDto value, $Res Function(MemberDto) _then) = _$MemberDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String photoUrl, String tier, int totalPoints, int pointsToNextTier, int notificationCount, int rewardCount
+ String id, String name, String photoUrl, String tier, int totalPoints, int pointsToNextTier, int notificationCount, int rewardCount, int tierStartPoints
 });
 
 
@@ -1508,7 +1508,7 @@ class _$MemberDtoCopyWithImpl<$Res>
 
 /// Create a copy of MemberDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? photoUrl = null,Object? tier = null,Object? totalPoints = null,Object? pointsToNextTier = null,Object? notificationCount = null,Object? rewardCount = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? photoUrl = null,Object? tier = null,Object? totalPoints = null,Object? pointsToNextTier = null,Object? notificationCount = null,Object? rewardCount = null,Object? tierStartPoints = null,}) {
   return _then(MemberDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -1518,6 +1518,7 @@ as String,totalPoints: null == totalPoints ? _self.totalPoints : totalPoints // 
 as int,pointsToNextTier: null == pointsToNextTier ? _self.pointsToNextTier : pointsToNextTier // ignore: cast_nullable_to_non_nullable
 as int,notificationCount: null == notificationCount ? _self.notificationCount : notificationCount // ignore: cast_nullable_to_non_nullable
 as int,rewardCount: null == rewardCount ? _self.rewardCount : rewardCount // ignore: cast_nullable_to_non_nullable
+as int,tierStartPoints: null == tierStartPoints ? _self.tierStartPoints : tierStartPoints // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -1603,10 +1604,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String photoUrl,  String tier,  int totalPoints,  int pointsToNextTier,  int notificationCount,  int rewardCount)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String photoUrl,  String tier,  int totalPoints,  int pointsToNextTier,  int notificationCount,  int rewardCount,  int tierStartPoints)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MemberDto() when $default != null:
-return $default(_that.id,_that.name,_that.photoUrl,_that.tier,_that.totalPoints,_that.pointsToNextTier,_that.notificationCount,_that.rewardCount);case _:
+return $default(_that.id,_that.name,_that.photoUrl,_that.tier,_that.totalPoints,_that.pointsToNextTier,_that.notificationCount,_that.rewardCount,_that.tierStartPoints);case _:
   return orElse();
 
 }
@@ -1624,10 +1625,10 @@ return $default(_that.id,_that.name,_that.photoUrl,_that.tier,_that.totalPoints,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String photoUrl,  String tier,  int totalPoints,  int pointsToNextTier,  int notificationCount,  int rewardCount)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String photoUrl,  String tier,  int totalPoints,  int pointsToNextTier,  int notificationCount,  int rewardCount,  int tierStartPoints)  $default,) {final _that = this;
 switch (_that) {
 case _MemberDto():
-return $default(_that.id,_that.name,_that.photoUrl,_that.tier,_that.totalPoints,_that.pointsToNextTier,_that.notificationCount,_that.rewardCount);case _:
+return $default(_that.id,_that.name,_that.photoUrl,_that.tier,_that.totalPoints,_that.pointsToNextTier,_that.notificationCount,_that.rewardCount,_that.tierStartPoints);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1644,10 +1645,10 @@ return $default(_that.id,_that.name,_that.photoUrl,_that.tier,_that.totalPoints,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String photoUrl,  String tier,  int totalPoints,  int pointsToNextTier,  int notificationCount,  int rewardCount)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String photoUrl,  String tier,  int totalPoints,  int pointsToNextTier,  int notificationCount,  int rewardCount,  int tierStartPoints)?  $default,) {final _that = this;
 switch (_that) {
 case _MemberDto() when $default != null:
-return $default(_that.id,_that.name,_that.photoUrl,_that.tier,_that.totalPoints,_that.pointsToNextTier,_that.notificationCount,_that.rewardCount);case _:
+return $default(_that.id,_that.name,_that.photoUrl,_that.tier,_that.totalPoints,_that.pointsToNextTier,_that.notificationCount,_that.rewardCount,_that.tierStartPoints);case _:
   return null;
 
 }
@@ -1659,7 +1660,7 @@ return $default(_that.id,_that.name,_that.photoUrl,_that.tier,_that.totalPoints,
 @JsonSerializable()
 
 class _MemberDto implements MemberDto {
-  const _MemberDto({required this.id, required this.name, required this.photoUrl, required this.tier, required this.totalPoints, required this.pointsToNextTier, required this.notificationCount, required this.rewardCount});
+  const _MemberDto({required this.id, required this.name, required this.photoUrl, required this.tier, required this.totalPoints, required this.pointsToNextTier, required this.notificationCount, required this.rewardCount, this.tierStartPoints = 0});
   factory _MemberDto.fromJson(Map<String, dynamic> json) => _$MemberDtoFromJson(json);
 
 @override final  String id;
@@ -1670,6 +1671,7 @@ class _MemberDto implements MemberDto {
 @override final  int pointsToNextTier;
 @override final  int notificationCount;
 @override final  int rewardCount;
+@override@JsonKey() final  int tierStartPoints;
 
 /// Create a copy of MemberDto
 /// with the given fields replaced by the non-null parameter values.
@@ -1684,18 +1686,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.tier, tier) || other.tier == tier)&&(identical(other.totalPoints, totalPoints) || other.totalPoints == totalPoints)&&(identical(other.pointsToNextTier, pointsToNextTier) || other.pointsToNextTier == pointsToNextTier)&&(identical(other.notificationCount, notificationCount) || other.notificationCount == notificationCount)&&(identical(other.rewardCount, rewardCount) || other.rewardCount == rewardCount));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.tier, tier) || other.tier == tier)&&(identical(other.totalPoints, totalPoints) || other.totalPoints == totalPoints)&&(identical(other.pointsToNextTier, pointsToNextTier) || other.pointsToNextTier == pointsToNextTier)&&(identical(other.notificationCount, notificationCount) || other.notificationCount == notificationCount)&&(identical(other.rewardCount, rewardCount) || other.rewardCount == rewardCount)&&(identical(other.tierStartPoints, tierStartPoints) || other.tierStartPoints == tierStartPoints));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,name,photoUrl,tier,totalPoints,pointsToNextTier,notificationCount,rewardCount);
+    return Object.hash(runtimeType,id,name,photoUrl,tier,totalPoints,pointsToNextTier,notificationCount,rewardCount,tierStartPoints);
 }
 
 @override
 String toString() {
-    return 'MemberDto(id: $id, name: $name, photoUrl: $photoUrl, tier: $tier, totalPoints: $totalPoints, pointsToNextTier: $pointsToNextTier, notificationCount: $notificationCount, rewardCount: $rewardCount)';
+    return 'MemberDto(id: $id, name: $name, photoUrl: $photoUrl, tier: $tier, totalPoints: $totalPoints, pointsToNextTier: $pointsToNextTier, notificationCount: $notificationCount, rewardCount: $rewardCount, tierStartPoints: $tierStartPoints)';
 }
 
 
@@ -1706,7 +1708,7 @@ abstract mixin class _$MemberDtoCopyWith<$Res> implements $MemberDtoCopyWith<$Re
   factory _$MemberDtoCopyWith(_MemberDto value, $Res Function(_MemberDto) _then) = __$MemberDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String photoUrl, String tier, int totalPoints, int pointsToNextTier, int notificationCount, int rewardCount
+ String id, String name, String photoUrl, String tier, int totalPoints, int pointsToNextTier, int notificationCount, int rewardCount, int tierStartPoints
 });
 
 
@@ -1723,7 +1725,7 @@ class __$MemberDtoCopyWithImpl<$Res>
 
 /// Create a copy of MemberDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? photoUrl = null,Object? tier = null,Object? totalPoints = null,Object? pointsToNextTier = null,Object? notificationCount = null,Object? rewardCount = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? photoUrl = null,Object? tier = null,Object? totalPoints = null,Object? pointsToNextTier = null,Object? notificationCount = null,Object? rewardCount = null,Object? tierStartPoints = null,}) {
   return _then(_MemberDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -1733,6 +1735,7 @@ as String,totalPoints: null == totalPoints ? _self.totalPoints : totalPoints // 
 as int,pointsToNextTier: null == pointsToNextTier ? _self.pointsToNextTier : pointsToNextTier // ignore: cast_nullable_to_non_nullable
 as int,notificationCount: null == notificationCount ? _self.notificationCount : notificationCount // ignore: cast_nullable_to_non_nullable
 as int,rewardCount: null == rewardCount ? _self.rewardCount : rewardCount // ignore: cast_nullable_to_non_nullable
+as int,tierStartPoints: null == tierStartPoints ? _self.tierStartPoints : tierStartPoints // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

@@ -56,6 +56,7 @@ abstract final class CatalogMapper {
     tier: _byName(LoyaltyTier.values, row.tier, LoyaltyTier.bronze),
     totalPoints: row.totalPoints,
     pointsToNextTier: row.pointsToNextTier,
+    tierStartPoints: row.tierStartPoints,
     notificationCount: row.notificationCount,
     rewardCount: row.rewardCount,
   );
@@ -131,6 +132,7 @@ abstract final class CatalogMapper {
         tier: dto.tier,
         totalPoints: dto.totalPoints,
         pointsToNextTier: dto.pointsToNextTier,
+        tierStartPoints: Value(dto.tierStartPoints),
         notificationCount: dto.notificationCount,
         rewardCount: dto.rewardCount,
       );

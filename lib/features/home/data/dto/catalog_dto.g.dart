@@ -108,6 +108,7 @@ _MemberDto _$MemberDtoFromJson(Map<String, dynamic> json) => _MemberDto(
   pointsToNextTier: (json['pointsToNextTier'] as num).toInt(),
   notificationCount: (json['notificationCount'] as num).toInt(),
   rewardCount: (json['rewardCount'] as num).toInt(),
+  tierStartPoints: (json['tierStartPoints'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$MemberDtoToJson(_MemberDto instance) =>
@@ -120,6 +121,7 @@ Map<String, dynamic> _$MemberDtoToJson(_MemberDto instance) =>
       'pointsToNextTier': instance.pointsToNextTier,
       'notificationCount': instance.notificationCount,
       'rewardCount': instance.rewardCount,
+      'tierStartPoints': instance.tierStartPoints,
     };
 
 _ChallengeDto _$ChallengeDtoFromJson(Map<String, dynamic> json) =>

@@ -58,7 +58,8 @@ void main() {
       await database
           .update(database.members)
           .write(const MembersCompanion(totalPoints: Value(1)));
-      final newer = decodeFixture(seedFixture)..['version'] = 2;
+      final newer = decodeFixture(seedFixture)
+        ..['version'] = (decodeFixture(seedFixture)['version'] as int) + 1;
 
       await loader(seedAssetLoader(jsonEncode(newer))).ensureSeeded();
 

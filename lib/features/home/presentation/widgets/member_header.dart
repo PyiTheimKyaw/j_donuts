@@ -35,34 +35,10 @@ class MemberHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              _Avatar(member: member),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      displayName,
-                      style: AppTypography.headline,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      l10n.memberTier(member.tier.label(l10n)),
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.ink,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              _NotificationBell(
-                count: member.notificationCount,
-                onTap: onNotificationsTap,
-              ),
-            ],
+          _IdentityRow(
+            member: member,
+            displayName: displayName,
+            onNotificationsTap: onNotificationsTap,
           ),
           if (nextTier != null) ...[
             const SizedBox(height: AppSpacing.md),
@@ -75,6 +51,63 @@ class MemberHeader extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+}
+
+class _IdentityRow extends StatelessWidget {
+  const _IdentityRow({
+    required this.member,
+    required this.displayName,
+    required this.onNotificationsTap,
+  });
+
+  final Member member;
+  final String displayName;
+  final VoidCallback onNotificationsTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _Avatar(member: member),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: _NameAndTier(member: member, displayName: displayName),
+        ),
+        _NotificationBell(
+          count: member.notificationCount,
+          onTap: onNotificationsTap,
+        ),
+      ],
+    );
+  }
+}
+
+class _NameAndTier extends StatelessWidget {
+  const _NameAndTier({required this.member, required this.displayName});
+
+  final Member member;
+  final String displayName;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          displayName,
+          style: AppTypography.headline,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        Text(
+          l10n.memberTier(member.tier.label(l10n)),
+          style: AppTypography.bodySmall.copyWith(color: AppColors.ink),
+        ),
+      ],
     );
   }
 }
@@ -133,7 +166,10 @@ class _NotificationBell extends StatelessWidget {
   final int count;
   final VoidCallback onTap;
 
-  static const double _badgeSize = 20;
+  static const EdgeInsets _padding = EdgeInsets.symmetric(
+    horizontal: AppSpacing.md,
+    vertical: AppSpacing.sm,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -150,10 +186,7 @@ class _NotificationBell extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppRadii.pill),
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm,
-            ),
+            padding: _padding,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -163,26 +196,39 @@ class _NotificationBell extends StatelessWidget {
                 ),
                 if (count > 0) ...[
                   const SizedBox(width: AppSpacing.xs),
-                  Container(
-                    width: _badgeSize,
-                    height: _badgeSize,
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                      color: AppColors.surface,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      '$count',
-                      style: AppTypography.caption.copyWith(
-                        color: AppColors.warning,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
+                  _UnreadBadge(count: count),
                 ],
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _UnreadBadge extends StatelessWidget {
+  const _UnreadBadge({required this.count});
+
+  final int count;
+
+  static const double _size = 20;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: _size,
+      height: _size,
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        shape: BoxShape.circle,
+      ),
+      child: Text(
+        '$count',
+        style: AppTypography.caption.copyWith(
+          color: AppColors.warning,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
@@ -194,6 +240,7 @@ class MemberHeaderSkeleton extends StatelessWidget {
 
   static const double _nameWidth = 140;
   static const double _lineHeight = 16;
+  static const double _nameLineHeight = _lineHeight * 1.5;
   static const double _chipWidth = 220;
   static const double _chipHeight = 24;
 
@@ -211,7 +258,7 @@ class MemberHeaderSkeleton extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Skeleton(width: _nameWidth, height: _lineHeight * 1.5),
+                  Skeleton(width: _nameWidth, height: _nameLineHeight),
                   SizedBox(height: AppSpacing.sm),
                   Skeleton(width: _nameWidth / 2, height: _lineHeight),
                 ],

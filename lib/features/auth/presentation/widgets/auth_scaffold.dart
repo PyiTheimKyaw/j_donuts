@@ -6,13 +6,14 @@ import 'package:j_donuts/features/auth/presentation/widgets/legal_footer.dart';
 import 'package:j_donuts/features/auth/presentation/widgets/progress_ring.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
 
-/// Scrolls only when the keyboard leaves too little room; otherwise [bottom]
-/// stays pinned to the foot of the screen.
+/// Only the form scrolls; [bottom] (Continue) stays pinned to the foot of the
+/// screen, which with the keyboard open means just above it. On a small phone
+/// a scrolled-away Continue button sits under the keyboard where the user
+/// cannot see it. The legal footer steps aside while typing to make room.
 ///
-/// Deliberately avoids `IntrinsicHeight` + `Expanded`: intrinsics report a
-/// widget's target size, so while an error message animates out (or the
-/// keyboard resizes the viewport) the body is briefly taller than measured and
-/// overflows. A min-height column with `spaceBetween` needs no measuring pass.
+/// Deliberately avoids `IntrinsicHeight`: intrinsics report a widget's target
+/// size, so while an error message animates out (or the keyboard resizes the
+/// viewport) the body is briefly taller than measured and overflows.
 class AuthScaffold extends StatelessWidget {
   const AuthScaffold({
     required this.body,
@@ -33,57 +34,67 @@ class AuthScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Read above the Scaffold: it strips the keyboard inset from its body.
+    final isTyping = MediaQuery.viewInsetsOf(context).bottom > 0;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: DecoratedBox(
         decoration: const BoxDecoration(gradient: AppColors.authBackground),
         child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) => SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.gutter,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _TopBar(
-                            showBack: showBack,
-                            step: step,
-                            totalSteps: totalSteps,
-                          ),
-                          body,
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          if (bottom != null) ...[
-                            const SizedBox(height: AppSpacing.xl),
-                            bottom!,
-                          ],
-                          if (showFooter) ...[
-                            const SizedBox(height: AppSpacing.xl),
-                            const LegalFooter(),
-                          ],
-                          const SizedBox(height: AppSpacing.lg),
-                        ],
-                      ),
-                    ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _TopBar(
+                          showBack: showBack,
+                          step: step,
+                          totalSteps: totalSteps,
+                        ),
+                        body,
+                      ],
+                    ),
                   ),
                 ),
-              ),
+                _PinnedFoot(
+                  bottom: bottom,
+                  showFooter: showFooter && !isTyping,
+                ),
+              ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _PinnedFoot extends StatelessWidget {
+  const _PinnedFoot({required this.bottom, required this.showFooter});
+
+  final Widget? bottom;
+  final bool showFooter;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (bottom != null) ...[const SizedBox(height: AppSpacing.lg), bottom!],
+        if (showFooter) ...[
+          const SizedBox(height: AppSpacing.xl),
+          const LegalFooter(),
+        ],
+        const SizedBox(height: AppSpacing.lg),
+      ],
     );
   }
 }

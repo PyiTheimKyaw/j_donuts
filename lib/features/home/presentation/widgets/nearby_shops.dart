@@ -61,18 +61,27 @@ class NearbyShopsHeader extends StatelessWidget {
               ),
             ),
           const SizedBox(height: AppSpacing.md),
-          FilledButton(
-            onPressed: () {},
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.surface,
-              foregroundColor: AppColors.primary,
-              minimumSize: const Size(0, AppSizes.minTapTarget - AppSpacing.sm),
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            ),
-            child: Text(l10n.exploreNow.toUpperCase()),
-          ),
+          const _ExploreNowButton(),
         ],
       ),
+    );
+  }
+}
+
+class _ExploreNowButton extends StatelessWidget {
+  const _ExploreNowButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton(
+      onPressed: () {},
+      style: FilledButton.styleFrom(
+        backgroundColor: AppColors.surface,
+        foregroundColor: AppColors.primary,
+        minimumSize: const Size(0, AppSizes.minTapTarget - AppSpacing.sm),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      ),
+      child: Text(AppLocalizations.of(context).exploreNow.toUpperCase()),
     );
   }
 }
@@ -84,8 +93,6 @@ class _ShopCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
     return Container(
       width: NearbyShops.cardWidth,
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -105,33 +112,51 @@ class _ShopCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
-          Text(
-            shop.name,
-            style: AppTypography.subtitle,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: AppSpacing.xxs),
-          Expanded(
-            child: Text(
-              shop.address,
-              style: AppTypography.caption,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          Text(
-            l10n.orderOnline,
-            style: AppTypography.label.copyWith(color: AppColors.accent),
-          ),
+          Expanded(child: _ShopDetails(shop: shop)),
         ],
       ),
     );
   }
 }
 
+class _ShopDetails extends StatelessWidget {
+  const _ShopDetails({required this.shop});
+
+  final Shop shop;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          shop.name,
+          style: AppTypography.subtitle,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: AppSpacing.xxs),
+        Expanded(
+          child: Text(
+            shop.address,
+            style: AppTypography.caption,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        Text(
+          AppLocalizations.of(context).orderOnline,
+          style: AppTypography.label.copyWith(color: AppColors.accent),
+        ),
+      ],
+    );
+  }
+}
+
 class NearbyShopsSkeleton extends StatelessWidget {
   const NearbyShopsSkeleton({super.key});
+
+  static const int _placeholderCount = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +166,7 @@ class NearbyShopsSkeleton extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.gutter),
-        itemCount: 2,
+        itemCount: _placeholderCount,
         separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.lg),
         itemBuilder: (_, _) =>
             const Skeleton(width: NearbyShops.cardWidth, radius: AppRadii.lg),

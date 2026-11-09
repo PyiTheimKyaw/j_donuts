@@ -97,23 +97,54 @@ class AppBottomNav extends StatelessWidget {
               duration: duration,
             ),
           ),
-          Row(
-            children: [
-              for (final (index, destination) in destinations.indexed)
-                AnimatedContainer(
-                  duration: duration,
-                  curve: AppCurves.emphasized,
-                  width: index == selectedIndex ? pillWidth : otherSlot,
-                  child: _Slot(
-                    destination: destination,
-                    isSelected: index == selectedIndex,
-                    onTap: () => onSelected(index),
-                  ),
-                ),
-            ],
+          _SlotRow(
+            destinations: destinations,
+            selectedIndex: selectedIndex,
+            onSelected: onSelected,
+            selectedWidth: pillWidth,
+            otherWidth: otherSlot,
+            duration: duration,
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Slots resize in step with the pill so labels never sit under it mid-slide.
+class _SlotRow extends StatelessWidget {
+  const _SlotRow({
+    required this.destinations,
+    required this.selectedIndex,
+    required this.onSelected,
+    required this.selectedWidth,
+    required this.otherWidth,
+    required this.duration,
+  });
+
+  final List<AppNavDestination> destinations;
+  final int selectedIndex;
+  final ValueChanged<int> onSelected;
+  final double selectedWidth;
+  final double otherWidth;
+  final Duration duration;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (final (index, destination) in destinations.indexed)
+          AnimatedContainer(
+            duration: duration,
+            curve: AppCurves.emphasized,
+            width: index == selectedIndex ? selectedWidth : otherWidth,
+            child: _Slot(
+              destination: destination,
+              isSelected: index == selectedIndex,
+              onTap: () => onSelected(index),
+            ),
+          ),
+      ],
     );
   }
 }

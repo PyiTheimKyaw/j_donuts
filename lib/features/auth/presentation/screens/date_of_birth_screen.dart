@@ -8,12 +8,11 @@ import 'package:j_donuts/app/theme/app_typography.dart';
 import 'package:j_donuts/core/result/failure.dart';
 import 'package:j_donuts/core/widgets/app_button.dart';
 import 'package:j_donuts/core/widgets/app_text_field.dart';
-import 'package:j_donuts/core/widgets/entrance_animation.dart';
 import 'package:j_donuts/features/auth/domain/validators/validators.dart';
 import 'package:j_donuts/features/auth/presentation/flow/auth_flow_controller.dart';
 import 'package:j_donuts/features/auth/presentation/flow/auth_flow_state.dart';
 import 'package:j_donuts/features/auth/presentation/validation_messages.dart';
-import 'package:j_donuts/features/auth/presentation/widgets/auth_scaffold.dart';
+import 'package:j_donuts/features/auth/presentation/widgets/auth_step_form.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
 
 /// On success the started session triggers the router's redirect to Welcome,
@@ -94,79 +93,100 @@ class _DateOfBirthScreenState extends ConsumerState<DateOfBirthScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(authFlowControllerProvider);
     final l10n = AppLocalizations.of(context);
-    final isValid = _flow.birthDateResult.isSuccess;
     final error = _errorMessage();
-    final submitFailure = state.error;
+    final highlightField = error == null ? null : '';
 
-    return AuthScaffold(
+    return AuthStepForm(
       step: DateOfBirthScreen.step,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          EntranceAnimation(
-            child: Text(l10n.dobTitle, style: AppTypography.headline),
-          ),
-          const SizedBox(height: AppSpacing.xxl),
-          EntranceAnimation(
-            index: 1,
-            child: AppTextField(
-              key: const Key('dob-month-field'),
-              controller: _monthController,
-              hintText: l10n.dobMonth,
-              readOnly: true,
-              onTap: _pickMonth,
-              errorText: error == null ? null : '',
-              trailing: const Icon(
-                Icons.expand_more_rounded,
-                color: AppColors.inkTertiary,
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          EntranceAnimation(
-            index: 2,
-            child: AppTextField(
-              key: const Key('dob-day-field'),
-              controller: _dayController,
-              hintText: l10n.dobDay,
-              errorText: error == null ? null : '',
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.next,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(DateOfBirthScreen.dayDigits),
-              ],
-              onChanged: (value) => _flow.birthDayChanged(int.tryParse(value)),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          EntranceAnimation(
-            index: 3,
-            child: AppTextField(
-              key: const Key('dob-year-field'),
-              controller: _yearController,
-              hintText: l10n.dobYear,
-              errorText: error ?? submitFailure?.localized(l10n),
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.done,
-              autofillHints: const [AutofillHints.birthdayYear],
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(DateOfBirthScreen.yearDigits),
-              ],
-              onChanged: _onYearChanged,
-            ),
-          ),
-        ],
-      ),
-      bottom: EntranceAnimation(
-        index: 4,
-        child: AppButton(
-          key: const Key('dob-continue'),
-          label: l10n.continueLabel,
-          isLoading: state.isSubmitting,
-          onPressed: isValid ? _flow.completeRegistration : null,
+      title: l10n.dobTitle,
+      fields: [
+        _MonthField(
+          controller: _monthController,
+          onTap: _pickMonth,
+          errorText: highlightField,
         ),
+        _digitsField(
+          key: const Key('dob-day-field'),
+          controller: _dayController,
+          hintText: l10n.dobDay,
+          maxDigits: DateOfBirthScreen.dayDigits,
+          errorText: highlightField,
+          onChanged: (value) => _flow.birthDayChanged(int.tryParse(value)),
+        ),
+        _digitsField(
+          key: const Key('dob-year-field'),
+          controller: _yearController,
+          hintText: l10n.dobYear,
+          maxDigits: DateOfBirthScreen.yearDigits,
+          errorText: error ?? state.error?.localized(l10n),
+          onChanged: _onYearChanged,
+          isLast: true,
+        ),
+      ],
+      continueButton: AppButton(
+        key: const Key('dob-continue'),
+        label: l10n.continueLabel,
+        isLoading: state.isSubmitting,
+        onPressed: _flow.birthDateResult.isSuccess
+            ? _flow.completeRegistration
+            : null,
+      ),
+    );
+  }
+
+  /// Day and year share one error highlight; only the year carries the
+  /// message so it appears once, under the whole date.
+  AppTextField _digitsField({
+    required Key key,
+    required TextEditingController controller,
+    required String hintText,
+    required int maxDigits,
+    required String? errorText,
+    required ValueChanged<String> onChanged,
+    bool isLast = false,
+  }) {
+    return AppTextField(
+      key: key,
+      controller: controller,
+      hintText: hintText,
+      errorText: errorText,
+      keyboardType: TextInputType.number,
+      textInputAction: isLast ? TextInputAction.done : TextInputAction.next,
+      autofillHints: isLast ? const [AutofillHints.birthdayYear] : null,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(maxDigits),
+      ],
+      onChanged: onChanged,
+    );
+  }
+}
+
+/// Read-only: the month comes from a sheet so it is always a valid month and
+/// shows in the user's language.
+class _MonthField extends StatelessWidget {
+  const _MonthField({
+    required this.controller,
+    required this.onTap,
+    required this.errorText,
+  });
+
+  final TextEditingController controller;
+  final VoidCallback onTap;
+  final String? errorText;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppTextField(
+      key: const Key('dob-month-field'),
+      controller: controller,
+      hintText: AppLocalizations.of(context).dobMonth,
+      readOnly: true,
+      onTap: onTap,
+      errorText: errorText,
+      trailing: const Icon(
+        Icons.expand_more_rounded,
+        color: AppColors.inkTertiary,
       ),
     );
   }

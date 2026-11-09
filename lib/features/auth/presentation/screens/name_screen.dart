@@ -4,17 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:j_donuts/app/router/app_routes.dart';
-import 'package:j_donuts/app/theme/app_spacing.dart';
-import 'package:j_donuts/app/theme/app_typography.dart';
 import 'package:j_donuts/core/result/failure.dart';
 import 'package:j_donuts/core/result/result.dart';
 import 'package:j_donuts/core/widgets/app_button.dart';
 import 'package:j_donuts/core/widgets/app_text_field.dart';
-import 'package:j_donuts/core/widgets/entrance_animation.dart';
 import 'package:j_donuts/features/auth/domain/validators/validators.dart';
 import 'package:j_donuts/features/auth/presentation/flow/auth_flow_controller.dart';
 import 'package:j_donuts/features/auth/presentation/validation_messages.dart';
-import 'package:j_donuts/features/auth/presentation/widgets/auth_scaffold.dart';
+import 'package:j_donuts/features/auth/presentation/widgets/auth_step_form.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
 
 class NameScreen extends ConsumerStatefulWidget {
@@ -79,59 +76,40 @@ class _NameScreenState extends ConsumerState<NameScreen> {
     ref.watch(authFlowControllerProvider);
     final l10n = AppLocalizations.of(context);
 
-    return AuthScaffold(
+    return AuthStepForm(
       step: NameScreen.step,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          EntranceAnimation(
-            child: Text(l10n.nameTitle, style: AppTypography.headline),
-          ),
-          const SizedBox(height: AppSpacing.xxl),
-          EntranceAnimation(
-            index: 1,
-            child: AppTextField(
-              key: const Key('first-name-field'),
-              controller: _firstController,
-              focusNode: _firstFocus,
-              autofocus: true,
-              hintText: l10n.firstName,
-              errorText: _errorFor(
-                _flow.firstNameResult,
-                touched: _firstTouched,
-              ),
-              textCapitalization: TextCapitalization.words,
-              textInputAction: TextInputAction.next,
-              autofillHints: const [AutofillHints.givenName],
-              onChanged: _flow.firstNameChanged,
-              onSubmitted: (_) => _lastFocus.requestFocus(),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          EntranceAnimation(
-            index: 2,
-            child: AppTextField(
-              key: const Key('last-name-field'),
-              controller: _lastController,
-              focusNode: _lastFocus,
-              hintText: l10n.lastName,
-              errorText: _errorFor(_flow.lastNameResult, touched: true),
-              textCapitalization: TextCapitalization.words,
-              textInputAction: TextInputAction.done,
-              autofillHints: const [AutofillHints.familyName],
-              onChanged: _flow.lastNameChanged,
-              onSubmitted: (_) => _flow.isNameValid ? _continue() : null,
-            ),
-          ),
-        ],
-      ),
-      bottom: EntranceAnimation(
-        index: 3,
-        child: AppButton(
-          key: const Key('name-continue'),
-          label: l10n.continueLabel,
-          onPressed: _flow.isNameValid ? _continue : null,
+      title: l10n.nameTitle,
+      fields: [
+        AppTextField(
+          key: const Key('first-name-field'),
+          controller: _firstController,
+          focusNode: _firstFocus,
+          autofocus: true,
+          hintText: l10n.firstName,
+          errorText: _errorFor(_flow.firstNameResult, touched: _firstTouched),
+          textCapitalization: TextCapitalization.words,
+          textInputAction: TextInputAction.next,
+          autofillHints: const [AutofillHints.givenName],
+          onChanged: _flow.firstNameChanged,
+          onSubmitted: (_) => _lastFocus.requestFocus(),
         ),
+        AppTextField(
+          key: const Key('last-name-field'),
+          controller: _lastController,
+          focusNode: _lastFocus,
+          hintText: l10n.lastName,
+          errorText: _errorFor(_flow.lastNameResult, touched: true),
+          textCapitalization: TextCapitalization.words,
+          textInputAction: TextInputAction.done,
+          autofillHints: const [AutofillHints.familyName],
+          onChanged: _flow.lastNameChanged,
+          onSubmitted: (_) => _flow.isNameValid ? _continue() : null,
+        ),
+      ],
+      continueButton: AppButton(
+        key: const Key('name-continue'),
+        label: l10n.continueLabel,
+        onPressed: _flow.isNameValid ? _continue : null,
       ),
     );
   }

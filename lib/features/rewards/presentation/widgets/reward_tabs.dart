@@ -56,9 +56,7 @@ class _RewardTabsState extends State<RewardTabs> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     final indicator = _indicator;
-    final duration = AppMotion.scaled(context, AppDurations.slow);
 
     // Scales down rather than overflowing on narrow phones or large text; the
     // indicator is measured inside the same scaled box, so it stays aligned.
@@ -69,41 +67,72 @@ class _RewardTabsState extends State<RewardTabs> {
         child: Stack(
           key: _rowKey,
           children: [
-            if (indicator != null)
-              AnimatedPositioned.fromRect(
-                rect: indicator,
-                duration: duration,
-                curve: AppCurves.emphasized,
-                child: const DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(AppRadii.pill),
-                    ),
-                  ),
-                ),
-              ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (final tab in ChallengeTab.values) ...[
-                  if (tab != ChallengeTab.values.first)
-                    const SizedBox(width: AppSpacing.sm),
-                  _TabLabel(
-                    key: _labelKeys[tab],
-                    label: switch (tab) {
-                      ChallengeTab.earn => l10n.eatMoreEarnMore,
-                      ChallengeTab.gift => l10n.gift,
-                    },
-                    isSelected: tab == widget.selected,
-                    onTap: () => widget.onSelected(tab),
-                  ),
-                ],
-              ],
+            if (indicator != null) _SlidingIndicator(rect: indicator),
+            _TabRow(
+              labelKeys: _labelKeys,
+              selected: widget.selected,
+              onSelected: widget.onSelected,
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _SlidingIndicator extends StatelessWidget {
+  const _SlidingIndicator({required this.rect});
+
+  final Rect rect;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedPositioned.fromRect(
+      rect: rect,
+      duration: AppMotion.scaled(context, AppDurations.slow),
+      curve: AppCurves.emphasized,
+      child: const DecoratedBox(
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.all(Radius.circular(AppRadii.pill)),
+        ),
+      ),
+    );
+  }
+}
+
+class _TabRow extends StatelessWidget {
+  const _TabRow({
+    required this.labelKeys,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final Map<ChallengeTab, GlobalKey> labelKeys;
+  final ChallengeTab selected;
+  final ValueChanged<ChallengeTab> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final tab in ChallengeTab.values) ...[
+          if (tab != ChallengeTab.values.first)
+            const SizedBox(width: AppSpacing.sm),
+          _TabLabel(
+            key: labelKeys[tab],
+            label: switch (tab) {
+              ChallengeTab.earn => l10n.eatMoreEarnMore,
+              ChallengeTab.gift => l10n.gift,
+            },
+            isSelected: tab == selected,
+            onTap: () => onSelected(tab),
+          ),
+        ],
+      ],
     );
   }
 }

@@ -114,14 +114,17 @@ class _QuarterLinesPainter extends CustomPainter {
 
   final double filledQuarters;
 
+  static const double _lineAlpha = 0.7;
+  static const double _lineWidth = 2;
+
   @override
   void paint(Canvas canvas, Size size) {
     if (filledQuarters >= 1) return;
     final center = size.center(Offset.zero);
     final paint = Paint()
-      ..color = AppColors.surface.withValues(alpha: 0.7)
-      ..strokeWidth = 2;
-    for (var i = 0; i < 4; i++) {
+      ..color = AppColors.surface.withValues(alpha: _lineAlpha)
+      ..strokeWidth = _lineWidth;
+    for (var i = 0; i < _DonutQuarters._quarters; i++) {
       final angle = -math.pi / 2 + i * math.pi / 2;
       canvas.drawLine(
         center,
@@ -143,15 +146,17 @@ class _CoffeeArc extends StatelessWidget {
   final double progress;
 
   static const double _cupFraction = 0.62;
+  static const double _cupAspectRatio = 0.75;
+  static const Alignment _cupAlignment = Alignment(0, 0.6);
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: CoffeeArcPainter(progress: progress),
       child: Align(
-        alignment: const Alignment(0, 0.6),
+        alignment: _cupAlignment,
         child: FractionallySizedBox(
-          widthFactor: _cupFraction * 0.75,
+          widthFactor: _cupFraction * _cupAspectRatio,
           heightFactor: _cupFraction,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(AppRadii.md),

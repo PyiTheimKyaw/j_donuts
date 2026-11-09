@@ -64,32 +64,50 @@ class _PointsRingState extends State<PointsRing>
           animation: _controller,
           builder: (context, _) {
             final revealed = widget.progress * sweep.value;
-            return Stack(
-              fit: StackFit.expand,
-              children: [
-                const CustomPaint(painter: RingTrackPainter()),
-                ClipPath(
-                  clipper: SweepRevealClipper(progress: revealed),
-                  // Cached as its own layer: only the clip changes per frame.
-                  child: const RepaintBoundary(
-                    child: CustomPaint(painter: IcingRingPainter()),
-                  ),
-                ),
-                CustomPaint(painter: IcingCapsPainter(progress: revealed)),
-                Center(
-                  child: _CenterLabel(
-                    title: l10n.totalPoints,
-                    value: formatGrouped(
-                      (widget.totalPoints * count.value).round(),
-                      locale: locale,
-                    ),
-                  ),
-                ),
-              ],
+            return _RingLayers(
+              revealed: revealed,
+              title: l10n.totalPoints,
+              value: formatGrouped(
+                (widget.totalPoints * count.value).round(),
+                locale: locale,
+              ),
             );
           },
         ),
       ),
+    );
+  }
+}
+
+class _RingLayers extends StatelessWidget {
+  const _RingLayers({
+    required this.revealed,
+    required this.title,
+    required this.value,
+  });
+
+  final double revealed;
+  final String title;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        const CustomPaint(painter: RingTrackPainter()),
+        ClipPath(
+          clipper: SweepRevealClipper(progress: revealed),
+          // Cached as its own layer: only the clip changes per frame.
+          child: const RepaintBoundary(
+            child: CustomPaint(painter: IcingRingPainter()),
+          ),
+        ),
+        CustomPaint(painter: IcingCapsPainter(progress: revealed)),
+        Center(
+          child: _CenterLabel(title: title, value: value),
+        ),
+      ],
     );
   }
 }

@@ -10,10 +10,9 @@ import 'package:j_donuts/app/theme/app_typography.dart';
 import 'package:j_donuts/core/result/failure.dart';
 import 'package:j_donuts/core/widgets/app_button.dart';
 import 'package:j_donuts/core/widgets/app_text_field.dart';
-import 'package:j_donuts/core/widgets/entrance_animation.dart';
 import 'package:j_donuts/features/auth/presentation/flow/auth_flow_controller.dart';
 import 'package:j_donuts/features/auth/presentation/validation_messages.dart';
-import 'package:j_donuts/features/auth/presentation/widgets/auth_scaffold.dart';
+import 'package:j_donuts/features/auth/presentation/widgets/auth_step_form.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
 
 class PhoneScreen extends ConsumerStatefulWidget {
@@ -21,6 +20,10 @@ class PhoneScreen extends ConsumerStatefulWidget {
 
   static const int step = 1;
   static const int _maxInputLength = 16;
+  static final List<TextInputFormatter> _inputFormatters = [
+    FilteringTextInputFormatter.allow(RegExp(r'[\d\s\-+]')),
+    LengthLimitingTextInputFormatter(_maxInputLength),
+  ];
 
   @override
   ConsumerState<PhoneScreen> createState() => _PhoneScreenState();
@@ -62,69 +65,73 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
     if (advanced && mounted) await context.push(AppRoutes.otp);
   }
 
+  AppTextField _phoneField({
+    required String? errorText,
+    required bool canSubmit,
+  }) {
+    return AppTextField(
+      key: const Key('phone-field'),
+      controller: _controller,
+      focusNode: _focusNode,
+      autofocus: true,
+      hintText: AppLocalizations.of(context).phoneHint,
+      errorText: errorText,
+      keyboardType: TextInputType.phone,
+      textInputAction: TextInputAction.done,
+      autofillHints: const [AutofillHints.telephoneNumberNational],
+      inputFormatters: PhoneScreen._inputFormatters,
+      leading: const _CountryCode(),
+      onChanged: ref.read(authFlowControllerProvider.notifier).phoneChanged,
+      onSubmitted: (_) => canSubmit ? _submit() : null,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(authFlowControllerProvider);
+    final flow = ref.read(authFlowControllerProvider.notifier);
     final isInvalid = state.phone == null && _controller.text.isNotEmpty;
     final formatError = _touched && isInvalid ? l10n.phoneInvalid : null;
     final notRegistered = state.error is NotRegisteredFailure;
-    final otherError = !notRegistered ? state.error : null;
+    final otherError = notRegistered ? null : state.error;
 
-    return AuthScaffold(
+    return AuthStepForm(
       step: PhoneScreen.step,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          EntranceAnimation(
-            child: Text(l10n.phoneTitle, style: AppTypography.headline),
-          ),
-          const SizedBox(height: AppSpacing.xxl),
-          EntranceAnimation(
-            index: 1,
-            child: AppTextField(
-              key: const Key('phone-field'),
-              controller: _controller,
-              focusNode: _focusNode,
-              autofocus: true,
-              hintText: l10n.phoneHint,
+      title: l10n.phoneTitle,
+      fields: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _phoneField(
               errorText: formatError ?? otherError?.localized(l10n),
-              keyboardType: TextInputType.phone,
-              textInputAction: TextInputAction.done,
-              autofillHints: const [AutofillHints.telephoneNumberNational],
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[\d\s\-+]')),
-                LengthLimitingTextInputFormatter(PhoneScreen._maxInputLength),
-              ],
-              leading: Text(
-                l10n.phoneCountryCode,
-                style: AppTypography.fieldInput.copyWith(
-                  color: AppColors.inkTertiary,
-                ),
-              ),
-              onChanged: ref
-                  .read(authFlowControllerProvider.notifier)
-                  .phoneChanged,
-              onSubmitted: (_) => state.phone != null ? _submit() : null,
+              canSubmit: state.phone != null,
             ),
-          ),
-          _NotRegisteredNotice(
-            visible: notRegistered,
-            onRegister: ref
-                .read(authFlowControllerProvider.notifier)
-                .switchToRegister,
-          ),
-        ],
-      ),
-      bottom: EntranceAnimation(
-        index: 2,
-        child: AppButton(
-          key: const Key('phone-continue'),
-          label: l10n.continueLabel,
-          isLoading: state.isSubmitting,
-          onPressed: state.phone == null ? null : _submit,
+            _NotRegisteredNotice(
+              visible: notRegistered,
+              onRegister: flow.switchToRegister,
+            ),
+          ],
         ),
+      ],
+      continueButton: AppButton(
+        key: const Key('phone-continue'),
+        label: l10n.continueLabel,
+        isLoading: state.isSubmitting,
+        onPressed: state.phone == null ? null : _submit,
       ),
+    );
+  }
+}
+
+class _CountryCode extends StatelessWidget {
+  const _CountryCode();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      AppLocalizations.of(context).phoneCountryCode,
+      style: AppTypography.fieldInput.copyWith(color: AppColors.inkTertiary),
     );
   }
 }

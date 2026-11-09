@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:j_donuts/app/locale/language_toggle.dart';
 import 'package:j_donuts/app/theme/app_colors.dart';
 import 'package:j_donuts/app/theme/app_spacing.dart';
 import 'package:j_donuts/app/theme/app_typography.dart';
@@ -42,17 +43,9 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          _Card(
-            child: ListTile(
-              key: const Key('settings-log-out'),
-              leading: const Icon(Icons.logout_rounded, color: AppColors.error),
-              title: Text(
-                l10n.logOut,
-                style: AppTypography.subtitle.copyWith(color: AppColors.error),
-              ),
-              onTap: () => _confirmLogOut(context, ref),
-            ),
-          ),
+          const _LanguageTile(),
+          const SizedBox(height: AppSpacing.lg),
+          _LogOutTile(onTap: () => _confirmLogOut(context, ref)),
         ],
       ),
     );
@@ -82,6 +75,62 @@ class SettingsScreen extends ConsumerWidget {
     if (confirmed ?? false) {
       await ref.read(sessionControllerProvider.notifier).logOut();
     }
+  }
+}
+
+/// A ListTile's trailing slot is too narrow for the toggle at large text
+/// sizes, so the toggle wraps under its label instead of overflowing.
+class _LanguageTile extends StatelessWidget {
+  const _LanguageTile();
+
+  @override
+  Widget build(BuildContext context) {
+    return _Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: AppSpacing.md,
+          runSpacing: AppSpacing.md,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.translate_rounded),
+                const SizedBox(width: AppSpacing.lg),
+                Text(
+                  AppLocalizations.of(context).languageLabel,
+                  style: AppTypography.subtitle,
+                ),
+              ],
+            ),
+            const LanguageToggle(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LogOutTile extends StatelessWidget {
+  const _LogOutTile({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return _Card(
+      child: ListTile(
+        key: const Key('settings-log-out'),
+        leading: const Icon(Icons.logout_rounded, color: AppColors.error),
+        title: Text(
+          AppLocalizations.of(context).logOut,
+          style: AppTypography.subtitle.copyWith(color: AppColors.error),
+        ),
+        onTap: onTap,
+      ),
+    );
   }
 }
 

@@ -10,6 +10,7 @@ import 'package:j_donuts/app/theme/app_spacing.dart';
 import 'package:j_donuts/core/network/network_providers.dart';
 import 'package:j_donuts/core/widgets/entrance_animation.dart';
 import 'package:j_donuts/core/widgets/offline_banner.dart';
+import 'package:j_donuts/core/widgets/status_bar_scrim.dart';
 import 'package:j_donuts/features/home/domain/entities/home_content.dart';
 import 'package:j_donuts/features/home/domain/entities/product.dart';
 import 'package:j_donuts/features/home/presentation/catalog_sync_controller.dart';
@@ -43,23 +44,26 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isOffline = ref.watch(isOnlineProvider).value == false;
     // The shell's Scaffold uses extendBody, so its bottom padding already
     // includes the floating nav bar; adding the bar again leaves a gap.
     final navClearance = MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
       backgroundColor: AppColors.scaffold,
-      body: RefreshIndicator(
-        color: AppColors.accent,
-        onRefresh: () => _refresh(context, ref),
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(child: OfflineBanner(isOffline: isOffline)),
-            const SliverToBoxAdapter(child: _HeaderBlock()),
-            const SliverToBoxAdapter(child: _SectionsBlock()),
-            SliverToBoxAdapter(child: _ShopsBlock(navClearance: navClearance)),
-          ],
+      body: StatusBarScrim(
+        color: AppColors.homeHeaderTop,
+        child: RefreshIndicator(
+          color: AppColors.accent,
+          onRefresh: () => _refresh(context, ref),
+          child: CustomScrollView(
+            slivers: [
+              const SliverToBoxAdapter(child: _HeaderBlock()),
+              const SliverToBoxAdapter(child: _SectionsBlock()),
+              SliverToBoxAdapter(
+                child: _ShopsBlock(navClearance: navClearance),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -78,10 +82,7 @@ class _HeaderBlock extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final member = ref.watch(currentMemberProvider);
-    final greeting = ref.watch(greetingNameProvider).value;
-    final banners = ref.watch(homeBannersProvider);
-    final l10n = AppLocalizations.of(context);
+    final isOffline = ref.watch(isOnlineProvider).value == false;
 
     return DecoratedBox(
       decoration: const BoxDecoration(gradient: AppColors.homeHeader),
@@ -94,31 +95,13 @@ class _HeaderBlock extends ConsumerWidget {
           ),
           child: Column(
             children: [
-              EntranceAnimation(
-                child: SectionState(
-                  value: member,
-                  skeleton: const MemberHeaderSkeleton(),
-                  isEmpty: (value) => value == null,
-                  onRetry: () => ref.invalidate(currentMemberProvider),
-                  builder: (value) => MemberHeader(
-                    member: value!,
-                    displayName: greeting ?? value.name,
-                    onNotificationsTap: () =>
-                        _showComingSoon(context, l10n.notifications),
-                  ),
-                ),
-              ),
+              OfflineBanner(isOffline: isOffline),
+              const EntranceAnimation(child: _MemberSection()),
               const SizedBox(height: AppSpacing.xl),
-              EntranceAnimation(
+              const EntranceAnimation(
                 index: 1,
                 gap: AppDurations.sectionStaggerGap,
-                child: SectionState(
-                  value: banners,
-                  skeleton: const BannerCarouselSkeleton(),
-                  isEmpty: (value) => value.isEmpty,
-                  onRetry: () => ref.invalidate(homeBannersProvider),
-                  builder: (value) => BannerCarousel(banners: value),
-                ),
+                child: _BannerSection(),
               ),
             ],
           ),
@@ -128,10 +111,82 @@ class _HeaderBlock extends ConsumerWidget {
   }
 }
 
+class _MemberSection extends ConsumerWidget {
+  const _MemberSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final member = ref.watch(currentMemberProvider);
+    final greeting = ref.watch(greetingNameProvider).value;
+    final l10n = AppLocalizations.of(context);
+
+    return SectionState(
+      value: member,
+      skeleton: const MemberHeaderSkeleton(),
+      isEmpty: (value) => value == null,
+      onRetry: () => ref.invalidate(currentMemberProvider),
+      builder: (value) => MemberHeader(
+        member: value!,
+        displayName: greeting ?? value.name,
+        onNotificationsTap: () => _showComingSoon(context, l10n.notifications),
+      ),
+    );
+  }
+}
+
+class _BannerSection extends ConsumerWidget {
+  const _BannerSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SectionState(
+      value: ref.watch(homeBannersProvider),
+      skeleton: const BannerCarouselSkeleton(),
+      isEmpty: (value) => value.isEmpty,
+      onRetry: () => ref.invalidate(homeBannersProvider),
+      builder: (value) => BannerCarousel(banners: value),
+    );
+  }
+}
+
 class _SectionsBlock extends ConsumerWidget {
   const _SectionsBlock();
 
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SectionState(
+      value: ref.watch(homeSectionsProvider),
+      onRetry: () => ref.invalidate(homeSectionsProvider),
+      isEmpty: (value) => value.isEmpty,
+      skeleton: const _SectionsSkeleton(),
+      builder: (value) => _SectionList(sections: value),
+    );
+  }
+}
+
+class _SectionsSkeleton extends StatelessWidget {
+  const _SectionsSkeleton();
+
   static const List<SectionKind> _placeholderKinds = SectionKind.values;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (final kind in _placeholderKinds)
+          _SectionFrame(
+            title: kind.title(AppLocalizations.of(context)),
+            child: ProductRowSkeleton(shape: ProductTileShape.forSection(kind)),
+          ),
+      ],
+    );
+  }
+}
+
+class _SectionList extends ConsumerWidget {
+  const _SectionList({required this.sections});
+
+  final List<HomeSection> sections;
 
   void _openProduct(BuildContext context, Product product, String heroTag) =>
       unawaited(
@@ -140,46 +195,28 @@ class _SectionsBlock extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sections = ref.watch(homeSectionsProvider);
-
-    return SectionState(
-      value: sections,
-      onRetry: () => ref.invalidate(homeSectionsProvider),
-      isEmpty: (value) => value.isEmpty,
-      skeleton: Column(
-        children: [
-          for (final kind in _placeholderKinds)
-            _SectionFrame(
-              title: kind.title(AppLocalizations.of(context)),
-              child: ProductRowSkeleton(
-                shape: ProductTileShape.forSection(kind),
-              ),
-            ),
-        ],
-      ),
-      builder: (value) => Column(
-        children: [
-          for (final (index, section) in value.indexed)
-            EntranceAnimation(
-              index: index + 2,
-              gap: AppDurations.sectionStaggerGap,
-              child: _SectionFrame(
-                title: section.kind.title(AppLocalizations.of(context)),
-                child: SectionState(
-                  value: AsyncData(section),
-                  onRetry: () => ref.invalidate(homeSectionsProvider),
-                  isEmpty: (value) => value.products.isEmpty,
-                  skeleton: const SizedBox.shrink(),
-                  builder: (value) => ProductRow(
-                    section: value,
-                    onProductTap: (product, {required heroTag}) =>
-                        _openProduct(context, product, heroTag),
-                  ),
+    return Column(
+      children: [
+        for (final (index, section) in sections.indexed)
+          EntranceAnimation(
+            index: index + 2,
+            gap: AppDurations.sectionStaggerGap,
+            child: _SectionFrame(
+              title: section.kind.title(AppLocalizations.of(context)),
+              child: SectionState(
+                value: AsyncData(section),
+                onRetry: () => ref.invalidate(homeSectionsProvider),
+                isEmpty: (value) => value.products.isEmpty,
+                skeleton: const SizedBox.shrink(),
+                builder: (value) => ProductRow(
+                  section: value,
+                  onProductTap: (product, {required heroTag}) =>
+                      _openProduct(context, product, heroTag),
                 ),
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
@@ -218,6 +255,7 @@ class _ShopsBlock extends ConsumerWidget {
   /// Cards stand on the grass: it starts this far above the cards' bottom.
   static const double _cardsOnGrass = 24;
   static const double _gapAboveNav = AppSpacing.xl;
+  static const double _sproutLineFraction = 0.4;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -234,7 +272,7 @@ class _ShopsBlock extends ConsumerWidget {
       child: CustomPaint(
         painter: ShopsSceneryPainter(
           groundHeight: navClearance + _gapAboveNav + _cardsOnGrass,
-          sproutLine: navClearance + _gapAboveNav * 0.4,
+          sproutLine: navClearance + _gapAboveNav * _sproutLineFraction,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

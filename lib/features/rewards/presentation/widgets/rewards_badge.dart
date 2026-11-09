@@ -13,8 +13,6 @@ class RewardsBadge extends StatelessWidget {
 
   final int count;
 
-  static const double _countSize = 24;
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -42,35 +40,60 @@ class RewardsBadge extends StatelessWidget {
               left: Radius.circular(AppRadii.pill),
             ),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                l10n.rewards,
-                style: AppTypography.subtitle.copyWith(
-                  color: AppColors.onPrimary,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Container(
-                width: _countSize,
-                height: _countSize,
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  color: AppColors.surface,
-                  shape: BoxShape.circle,
-                ),
-                child: Text(
-                  '$count',
-                  style: AppTypography.label.copyWith(
-                    color: AppColors.warning,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
+          child: _BadgeContent(count: count, label: l10n.rewards),
+        ),
+      ),
+    );
+  }
+}
+
+class _BadgeContent extends StatelessWidget {
+  const _BadgeContent({required this.count, required this.label});
+
+  final int count;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          label,
+          style: AppTypography.subtitle.copyWith(
+            color: AppColors.onPrimary,
+            fontWeight: FontWeight.w700,
           ),
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        _CountDot(count: count),
+      ],
+    );
+  }
+}
+
+class _CountDot extends StatelessWidget {
+  const _CountDot({required this.count});
+
+  final int count;
+
+  static const double _size = 24;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: _size,
+      height: _size,
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        shape: BoxShape.circle,
+      ),
+      child: Text(
+        '$count',
+        style: AppTypography.label.copyWith(
+          color: AppColors.warning,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );

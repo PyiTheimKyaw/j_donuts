@@ -8,6 +8,7 @@ import 'package:j_donuts/app/theme/app_typography.dart';
 import 'package:j_donuts/core/widgets/app_image.dart';
 import 'package:j_donuts/core/widgets/skeleton.dart';
 import 'package:j_donuts/features/home/domain/entities/home_content.dart';
+import 'package:j_donuts/features/home/domain/entities/image_ref.dart';
 
 /// Auto-plays, but pauses while the user is touching it and does not move at
 /// all under Reduce Motion, where an unprompted slide is unwanted motion.
@@ -43,9 +44,14 @@ class _BannerCarouselState extends State<BannerCarousel> {
     super.dispose();
   }
 
+  /// A plain [Timer] ignores [TickerMode], so it is checked explicitly: the
+  /// carousel stops while its tab is in the background instead of animating
+  /// pages nobody can see.
   void _restartAutoPlay() {
     _autoPlay?.cancel();
-    if (AppMotion.reduceMotion(context) || widget.banners.length < 2) return;
+    final isVisible = TickerMode.valuesOf(context).enabled;
+    if (!isVisible || AppMotion.reduceMotion(context)) return;
+    if (widget.banners.length < 2) return;
     _autoPlay = Timer.periodic(AppDurations.bannerAutoPlay, (_) => _advance());
   }
 
@@ -95,8 +101,6 @@ class _BannerCard extends StatelessWidget {
 
   final PromoBanner banner;
 
-  static const double _imageFraction = 0.5;
-
   Color get _background => switch (banner.style) {
     BannerStyle.purple => AppColors.purple,
     BannerStyle.cyan => AppColors.primary,
@@ -105,8 +109,6 @@ class _BannerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final badge = banner.badge;
-
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppRadii.xl),
       child: ColoredBox(
@@ -114,41 +116,68 @@ class _BannerCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: FractionallySizedBox(
-                widthFactor: 0.7,
-                heightFactor: _imageFraction,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(AppRadii.lg),
-                  ),
-                  child: AppImage(banner.image),
-                ),
-              ),
-            ),
+            _BannerImage(image: banner.image),
             Padding(
               padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                children: [
-                  if (badge != null) _Badge(text: badge),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    banner.title,
-                    style: AppTypography.title.copyWith(
-                      color: AppColors.onPrimary,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
+              child: _BannerText(banner: banner),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _BannerImage extends StatelessWidget {
+  const _BannerImage({required this.image});
+
+  final ImageRef image;
+
+  static const double _widthFraction = 0.7;
+  static const double _heightFraction = 0.5;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: FractionallySizedBox(
+        widthFactor: _widthFraction,
+        heightFactor: _heightFraction,
+        child: ClipRRect(
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(AppRadii.lg),
+          ),
+          child: AppImage(image),
+        ),
+      ),
+    );
+  }
+}
+
+class _BannerText extends StatelessWidget {
+  const _BannerText({required this.banner});
+
+  final PromoBanner banner;
+
+  @override
+  Widget build(BuildContext context) {
+    final badge = banner.badge;
+
+    return Column(
+      children: [
+        if (badge != null) _Badge(text: badge),
+        const SizedBox(height: AppSpacing.sm),
+        Text(
+          banner.title,
+          style: AppTypography.title.copyWith(
+            color: AppColors.onPrimary,
+            fontWeight: FontWeight.w700,
+          ),
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 }

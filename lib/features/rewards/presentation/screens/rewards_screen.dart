@@ -6,6 +6,7 @@ import 'package:j_donuts/app/theme/app_spacing.dart';
 import 'package:j_donuts/app/theme/app_typography.dart';
 import 'package:j_donuts/core/widgets/entrance_animation.dart';
 import 'package:j_donuts/core/widgets/skeleton.dart';
+import 'package:j_donuts/core/widgets/status_bar_scrim.dart';
 import 'package:j_donuts/features/home/domain/entities/member.dart';
 import 'package:j_donuts/features/home/presentation/home_view_models.dart';
 import 'package:j_donuts/features/home/presentation/widgets/section_state.dart';
@@ -31,28 +32,31 @@ class RewardsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.scaffold,
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: SectionState<Member?>(
-              value: member,
-              isEmpty: (value) => value == null,
-              onRetry: () => ref.invalidate(currentMemberProvider),
-              skeleton: const _HeaderSkeleton(),
-              builder: (value) => _Header(member: value!),
+      body: StatusBarScrim(
+        color: AppColors.surface,
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: SectionState<Member?>(
+                value: member,
+                isEmpty: (value) => value == null,
+                onRetry: () => ref.invalidate(currentMemberProvider),
+                skeleton: const _HeaderSkeleton(),
+                builder: (value) => _Header(member: value!),
+              ),
             ),
-          ),
-          const SliverPadding(
-            padding: EdgeInsets.fromLTRB(
-              AppSpacing.gutter,
-              AppSpacing.lg,
-              AppSpacing.gutter,
-              0,
+            const SliverPadding(
+              padding: EdgeInsets.fromLTRB(
+                AppSpacing.gutter,
+                AppSpacing.lg,
+                AppSpacing.gutter,
+                0,
+              ),
+              sliver: SliverToBoxAdapter(child: _ChallengeList()),
             ),
-            sliver: SliverToBoxAdapter(child: _ChallengeList()),
-          ),
-          SliverToBoxAdapter(child: SizedBox(height: bottomClearance)),
-        ],
+            SliverToBoxAdapter(child: SizedBox(height: bottomClearance)),
+          ],
+        ),
       ),
     );
   }
@@ -63,17 +67,8 @@ class _Header extends ConsumerWidget {
 
   final Member member;
 
-  /// The ring is wider than its column and runs off the right edge.
-  static const double _ringWidthFraction = 0.6;
-  static const double _ringBleedFraction = 0.2;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final width = MediaQuery.sizeOf(context).width;
-    final ringDiameter = width * _ringWidthFraction;
-    final ringLeft = width - ringDiameter * (1 - _ringBleedFraction);
-    final ladderWidth = ringLeft - AppSpacing.gutter - AppSpacing.sm;
     final selectedTab = ref.watch(selectedRewardTabProvider);
 
     return Stack(
@@ -87,60 +82,9 @@ class _Header extends ConsumerWidget {
           child: Column(
             children: [
               const SizedBox(height: AppSpacing.xl),
-              Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: AppSpacing.gutter,
-                        right: AppSpacing.md,
-                      ),
-                      child: EntranceAnimation(
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            l10n.rewardsTitle,
-                            maxLines: 1,
-                            style: AppTypography.headline,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  RewardsBadge(count: member.rewardCount),
-                ],
-              ),
+              _TitleRow(rewardCount: member.rewardCount),
               const SizedBox(height: AppSpacing.xl),
-              SizedBox(
-                height: ringDiameter,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Positioned(
-                      left: AppSpacing.gutter,
-                      top: AppSpacing.sm,
-                      width: ladderWidth,
-                      child: TierLadderView(member: member),
-                    ),
-                    Positioned(
-                      right: -ringDiameter * _ringBleedFraction,
-                      top: 0,
-                      child: EntranceAnimation(
-                        index: 1,
-                        gap: AppDurations.sectionStaggerGap,
-                        beginScale: AppMotionScales.popFrom + 0.4,
-                        offset: Offset.zero,
-                        child: PointsRing(
-                          progress: member.tierProgress,
-                          totalPoints: member.totalPoints,
-                          diameter: ringDiameter,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              _LadderAndRing(member: member),
               const SizedBox(height: AppSpacing.xl),
               RewardTabs(
                 selected: selectedTab,
@@ -148,6 +92,93 @@ class _Header extends ConsumerWidget {
                     ref.read(selectedRewardTabProvider.notifier).selected = tab,
               ),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TitleRow extends StatelessWidget {
+  const _TitleRow({required this.rewardCount});
+
+  final int rewardCount;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: AppSpacing.gutter,
+              right: AppSpacing.md,
+            ),
+            child: EntranceAnimation(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  AppLocalizations.of(context).rewardsTitle,
+                  maxLines: 1,
+                  style: AppTypography.headline,
+                ),
+              ),
+            ),
+          ),
+        ),
+        RewardsBadge(count: rewardCount),
+      ],
+    );
+  }
+}
+
+/// Ladder and ring both sit unpositioned in the Stack so it takes the taller
+/// of the two: on a narrow phone the ladder outgrows the ring and would
+/// otherwise run under the tabs.
+class _LadderAndRing extends StatelessWidget {
+  const _LadderAndRing({required this.member});
+
+  final Member member;
+
+  /// The ring is wider than its column and runs off the right edge.
+  static const double _ringWidthFraction = 0.6;
+  static const double _ringBleedFraction = 0.2;
+  static const double _ringPopFrom = AppMotionScales.popFrom + 0.4;
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final ringDiameter = width * _ringWidthFraction;
+    final ringLeft = width - ringDiameter * (1 - _ringBleedFraction);
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        SizedBox(width: double.infinity, height: ringDiameter),
+        Padding(
+          padding: const EdgeInsets.only(
+            left: AppSpacing.gutter,
+            top: AppSpacing.sm,
+          ),
+          child: SizedBox(
+            width: ringLeft - AppSpacing.gutter - AppSpacing.sm,
+            child: TierLadderView(member: member),
+          ),
+        ),
+        Positioned(
+          right: -ringDiameter * _ringBleedFraction,
+          top: 0,
+          child: EntranceAnimation(
+            index: 1,
+            gap: AppDurations.sectionStaggerGap,
+            beginScale: _ringPopFrom,
+            offset: Offset.zero,
+            child: PointsRing(
+              progress: member.tierProgress,
+              totalPoints: member.totalPoints,
+              diameter: ringDiameter,
+            ),
           ),
         ),
       ],
@@ -170,19 +201,7 @@ class _ChallengeList extends ConsumerWidget {
       isEmpty: (value) => value.isEmpty,
       onRetry: () => ref.invalidate(rewardChallengesProvider),
       skeleton: const _CardsSkeleton(),
-      builder: (visible) => AnimatedSwitcher(
-        duration: AppMotion.scaled(context, AppDurations.medium),
-        switchInCurve: AppCurves.standard,
-        transitionBuilder: (child, animation) => FadeTransition(
-          opacity: animation,
-          child: SlideTransition(
-            position: Tween(
-              begin: const Offset(0.06, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          ),
-        ),
+      builder: (visible) => _TabContentSwitcher(
         child: Column(
           key: ValueKey(tab),
           children: [
@@ -198,6 +217,33 @@ class _ChallengeList extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _TabContentSwitcher extends StatelessWidget {
+  const _TabContentSwitcher({required this.child});
+
+  final Widget child;
+
+  static const Offset _slideFrom = Offset(0.06, 0);
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: AppMotion.scaled(context, AppDurations.medium),
+      switchInCurve: AppCurves.standard,
+      transitionBuilder: (child, animation) => FadeTransition(
+        opacity: animation,
+        child: SlideTransition(
+          position: Tween(
+            begin: _slideFrom,
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        ),
+      ),
+      child: child,
     );
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:j_donuts/app/motion/app_motion.dart';
 import 'package:j_donuts/app/theme/app_colors.dart';
@@ -10,6 +8,7 @@ import 'package:j_donuts/core/widgets/entrance_animation.dart';
 import 'package:j_donuts/features/home/domain/entities/member.dart';
 import 'package:j_donuts/features/home/presentation/home_labels.dart';
 import 'package:j_donuts/features/rewards/domain/tier_ladder.dart';
+import 'package:j_donuts/features/rewards/presentation/widgets/tier_shield.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
 
 /// Rungs enter top to bottom; only once they have all landed does the
@@ -21,7 +20,7 @@ class TierLadderView extends StatelessWidget {
 
   final Member member;
 
-  static const double badgeSize = 40;
+  static const double badgeSize = TierShield.size;
   static const double rungGap = 36;
 
   @override
@@ -76,7 +75,6 @@ class _Rung extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     final isCurrent = step.status == TierStatus.current;
     final fill = connectorFill;
 
@@ -84,18 +82,11 @@ class _Rung extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Column(
-            children: [
-              AnimatedScale(
-                scale: isCurrent ? 1.1 : 1,
-                duration: AppMotion.scaled(context, AppDurations.medium),
-                child: TierShield(tier: step.tier, isCurrent: isCurrent),
-              ),
-              if (fill != null)
-                Expanded(
-                  child: _Connector(fill: fill, delay: fillDelay),
-                ),
-            ],
+          _RungMarker(
+            step: step,
+            isCurrent: isCurrent,
+            connectorFill: fill,
+            fillDelay: fillDelay,
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
@@ -103,20 +94,10 @@ class _Rung extends StatelessWidget {
               padding: EdgeInsets.only(
                 bottom: fill == null ? 0 : TierLadderView.rungGap,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    step.tier.label(l10n),
-                    style: AppTypography.subtitle.copyWith(
-                      fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    _caption(context, l10n),
-                    style: AppTypography.caption.copyWith(color: AppColors.ink),
-                  ),
-                ],
+              child: _RungText(
+                step: step,
+                isCurrent: isCurrent,
+                caption: _caption(context, AppLocalizations.of(context)),
               ),
             ),
           ),
@@ -136,6 +117,72 @@ class _Rung extends StatelessWidget {
       ),
       TierStatus.future => l10n.tierSoon,
     };
+  }
+}
+
+class _RungMarker extends StatelessWidget {
+  const _RungMarker({
+    required this.step,
+    required this.isCurrent,
+    required this.connectorFill,
+    required this.fillDelay,
+  });
+
+  final TierStep step;
+  final bool isCurrent;
+  final double? connectorFill;
+  final Duration fillDelay;
+
+  static const double _currentScale = 1.1;
+
+  @override
+  Widget build(BuildContext context) {
+    final fill = connectorFill;
+
+    return Column(
+      children: [
+        AnimatedScale(
+          scale: isCurrent ? _currentScale : 1,
+          duration: AppMotion.scaled(context, AppDurations.medium),
+          child: TierShield(tier: step.tier, isCurrent: isCurrent),
+        ),
+        if (fill != null)
+          Expanded(
+            child: _Connector(fill: fill, delay: fillDelay),
+          ),
+      ],
+    );
+  }
+}
+
+class _RungText extends StatelessWidget {
+  const _RungText({
+    required this.step,
+    required this.isCurrent,
+    required this.caption,
+  });
+
+  final TierStep step;
+  final bool isCurrent;
+  final String caption;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          step.tier.label(AppLocalizations.of(context)),
+          style: AppTypography.subtitle.copyWith(
+            fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w600,
+          ),
+        ),
+        Text(
+          caption,
+          style: AppTypography.caption.copyWith(color: AppColors.ink),
+        ),
+      ],
+    );
   }
 }
 
@@ -190,117 +237,4 @@ class _ConnectorPainter extends CustomPainter {
   @override
   bool shouldRepaint(_ConnectorPainter oldDelegate) =>
       oldDelegate.filledFraction != filledFraction;
-}
-
-/// Shield with the tier's initial and one to three stars, as in the design.
-class TierShield extends StatelessWidget {
-  const TierShield({required this.tier, this.isCurrent = false, super.key});
-
-  final LoyaltyTier tier;
-  final bool isCurrent;
-
-  (Color, Color) get _colors => switch (tier) {
-    LoyaltyTier.bronze => (AppColors.tierBronze, AppColors.tierBronze),
-    LoyaltyTier.silver => (AppColors.tierSilver, AppColors.tierSilverShade),
-    LoyaltyTier.gold => (AppColors.tierGold, AppColors.tierGoldShade),
-    LoyaltyTier.platinum => (
-      AppColors.tierPlatinum,
-      AppColors.tierPlatinumShade,
-    ),
-  };
-
-  @override
-  Widget build(BuildContext context) {
-    final (fill, shade) = _colors;
-    final stars = math.max(1, tier.index);
-    const size = TierLadderView.badgeSize;
-
-    return SizedBox.square(
-      dimension: size,
-      child: CustomPaint(
-        painter: _ShieldPainter(fill: fill, shade: shade, glow: isCurrent),
-        child: Padding(
-          padding: const EdgeInsets.only(top: size * 0.14),
-          child: Column(
-            children: [
-              Text(
-                '★' * stars,
-                style: AppTypography.caption.copyWith(
-                  color: shade,
-                  fontSize: size * 0.18,
-                  height: 1,
-                ),
-              ),
-              Text(
-                tier.name[0].toUpperCase(),
-                style: AppTypography.subtitle.copyWith(
-                  color: shade,
-                  fontWeight: FontWeight.w700,
-                  height: 1.1,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ShieldPainter extends CustomPainter {
-  const _ShieldPainter({
-    required this.fill,
-    required this.shade,
-    required this.glow,
-  });
-
-  final Color fill;
-  final Color shade;
-  final bool glow;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-    final shield = Path()
-      ..moveTo(w * 0.5, 0)
-      ..cubicTo(w * 0.72, h * 0.1, w * 0.88, h * 0.1, w, h * 0.12)
-      ..lineTo(w, h * 0.5)
-      ..cubicTo(w, h * 0.78, w * 0.72, h * 0.92, w * 0.5, h)
-      ..cubicTo(w * 0.28, h * 0.92, 0, h * 0.78, 0, h * 0.5)
-      ..lineTo(0, h * 0.12)
-      ..cubicTo(w * 0.12, h * 0.1, w * 0.28, h * 0.1, w * 0.5, 0)
-      ..close();
-    if (glow) {
-      canvas.drawPath(
-        shield.shift(const Offset(0, 2)),
-        Paint()
-          ..color = shade.withValues(alpha: 0.4)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
-      );
-    }
-    canvas
-      ..drawPath(
-        shield,
-        Paint()
-          ..shader = LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color.lerp(fill, AppColors.surface, 0.45)!, fill],
-          ).createShader(Offset.zero & size),
-      )
-      ..drawPath(
-        shield,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5
-          ..color = shade.withValues(alpha: 0.6),
-      );
-  }
-
-  @override
-  bool shouldRepaint(_ShieldPainter oldDelegate) =>
-      oldDelegate.fill != fill ||
-      oldDelegate.shade != shade ||
-      oldDelegate.glow != glow;
 }

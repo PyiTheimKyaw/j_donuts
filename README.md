@@ -1,10 +1,13 @@
 # J'Donuts
 
+[![CI](https://github.com/PyiTheimKyaw/j_donuts/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/PyiTheimKyaw/j_donuts/actions/workflows/ci.yml)
+
 A working slice of the J'Donuts customer app: onboarding with fake login and registration, an offline-first Home and
 Product detail, and an animated Rewards screen.
 
-> Status: all three tasks built (registration, Home and Product detail, Rewards); final polish, builds and the integration test next. Sections marked _TBD_ are filled in as later phases land.
-> The roadmap is in [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md).
+All three tasks are built: registration (Task 1), offline-first Home and Product detail
+(Task 2) and the Rewards screen (Task 3). The roadmap the work followed is in
+[`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md).
 
 ## Versions
 
@@ -25,13 +28,29 @@ flutter run            # pick an iOS Simulator or Android emulator
 Quality gates, also run by CI on every pull request:
 
 ```sh
-dart format --output=none --set-exit-if-changed lib test
+dart format --output=none --set-exit-if-changed lib test integration_test
 flutter analyze --fatal-infos
 flutter test
 ```
 
 Generated files (`*.g.dart`, `*.freezed.dart`, `lib/l10n/generated/`) are committed so the
 project opens cleanly in an IDE, and CI regenerates them to make sure they are in sync.
+
+### Builds
+
+```sh
+flutter build apk --release      # build/app/outputs/flutter-apk/app-release.apk
+flutter build ios --simulator    # build/ios/iphonesimulator/Runner.app
+```
+
+To install the prebuilt artifacts: `adb install jdonuts-release.apk` on an Android emulator or
+phone; for iOS, unzip `jdonuts-ios-simulator.zip` (it contains `Runner.app`) and run
+`xcrun simctl install booted Runner.app` with a simulator booted, or drag the `.app` onto the
+simulator window.
+
+The APK is a universal build (all three CPU architectures), which is why it is larger than a
+store download would be; the app's own assets are about 2 MB. It is signed with Flutter's
+default debug key, which is enough to install it but not to publish it.
 
 ## Fake OTP
 
@@ -57,6 +76,14 @@ lib/
     shell/    bottom navigation, placeholder tabs, settings
   l10n/       ARB files (en, my) and generated localizations
 ```
+
+### Languages
+
+Every string lives in ARB files (`lib/l10n/app_en.arb`, `app_my.arb`) and goes through
+gen-l10n; numbers are formatted per locale, so Burmese shows Myanmar digits. A language toggle
+(English / မြန်မာ) sits on Onboarding, so registration can be done in either language, and in
+Settings. The choice is stored on the device; until the user picks one, the app follows the
+system language.
 
 ### State management: Riverpod
 
@@ -105,8 +132,10 @@ streams, so anything written to it shows up everywhere at once.
 - **Public versus private data.** Products, banners, sections and shops are public and refreshed.
   The member record and challenges are private to the user, so they come only from the seed.
   Home and Rewards read the same single member record.
-- **Schema versions.** v1 held `users`. v2 adds the catalogue, loyalty and `sync_meta` tables
-  through an additive migration, covered by a test that upgrades a real v1 database.
+- **Schema versions.** v1 held `users`. v2 adds the catalogue, loyalty and `sync_meta` tables;
+  v3 adds `members.tier_start_points` so tier progress can be measured from where the tier
+  began. Both migrations are additive and covered by tests that upgrade real v1 and v2
+  databases.
 
 ### Animations
 
@@ -146,8 +175,10 @@ flutter test integration_test -d <device-id>   # end-to-end on a simulator, emul
 |---|---|
 | Domain (unit) | Every validation rule (phone normalisation, OTP shape, names incl. Myanmar script, real calendar dates, leap years, minimum age 13); use cases; tier ladder and tier progress |
 | Data (unit) | Fake auth (OTP lockout after 3, per-number counters, register and session), secure session store, seed loader (once per version, retry on failure), catalogue repository (offline reads, refresh, removals, empty sections), remote envelope parsing, connectivity, schema migrations v1→v3 and v2→v3 against real old schemas |
-| Widgets | Each registration step's validation and loading states; Home sections, offline banner and pull-to-refresh; product detail stepper and live total; Rewards ring, ladder, tabs and challenge cards; bottom nav; Settings log out; layout on a 360×640 phone with the keyboard open and 1.3× text |
+| Widgets | Each registration step's validation and loading states; Home sections, offline banner and pull-to-refresh; product detail stepper and live total; Rewards ring, ladder, tabs and challenge cards; bottom nav; Settings log out |
+| Layout | Every registration step on a 360×640 phone with the keyboard open and 1.3× text; Onboarding, Welcome, Home, Product detail, Rewards and Settings on a 4.7" (375×667) phone at 1.3× text, in both English and Burmese; the Rewards tier ladder never running under the tabs |
 | App | Session lifecycle: register, relaunch → Home, log out, relaunch → Onboarding |
+| Language | The toggle switches the app between English and Burmese and the choice survives a relaunch; an unsupported stored language falls back to the device language |
 | Integration | `integration_test/register_to_product_test.dart`: a new member registers through every step, lands on Home and opens a product, on a real device |
 
 Widget tests run against a fixed seed in `test/fixtures/seed_v1.json`, so editing the app's
@@ -165,8 +196,23 @@ painted in code. The design screenshots from the brief are not in this repositor
 
 ## Known gaps
 
-_TBD_
+- **No mock server.** The `/v1` catalogue is a bundled response behind `RemoteCatalogDataSource`,
+  so there is no Dio client and no interceptors yet. A Dio implementation slots in at
+  `home_providers.dart` without touching the UI.
+- **One member record for everyone.** Loyalty data (tier, points, challenges) comes from the seed,
+  so every account sees the same member; only the greeting uses the registered name. A real
+  back end would key the member record by user.
+- **Add to cart is visual only.** The brief lists a persistent cart as a bonus; it is not built.
+- **Typeface.** The designs use a commercial rounded geometric face; the app bundles Lexend
+  (SIL Open Font License) as the closest free match, so letter shapes differ slightly.
+- **Integration test is local only.** It needs a simulator or emulator, so CI runs analyze and
+  the unit and widget tests but not the integration test.
+- **Frame timing not profiled.** Animations are built to stay cheap (the points ring is cached
+  and revealed by a clip; off-screen tabs stop their tickers and the carousel timer), but they
+  have not been measured in profile mode on a mid-range Android phone.
+- **Commit granularity.** Each feature landed as one or two commits through its own pull request,
+  so commits are larger than ideal; the pull requests give the finer history.
 
 ## Time spent
 
-_TBD_
+Approximately 17 hours (spread across 2 days)

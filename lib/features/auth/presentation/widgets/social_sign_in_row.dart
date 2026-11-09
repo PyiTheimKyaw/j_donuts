@@ -13,6 +13,10 @@ class SocialSignInRow extends StatelessWidget {
   static const double _iconSize = 30;
   static const double _spacing = 56;
 
+  /// Material icons carry built-in padding, so they need a larger box than the
+  /// text glyph to read at the same visual weight.
+  static const double _materialIconSize = 34;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -84,12 +88,12 @@ class _SocialButton extends StatelessWidget {
     ),
     SocialProvider.apple => const Icon(
       Icons.apple,
-      size: SocialSignInRow._iconSize + 4,
+      size: SocialSignInRow._materialIconSize,
       color: AppColors.ink,
     ),
     SocialProvider.facebook => const Icon(
       Icons.facebook,
-      size: SocialSignInRow._iconSize + 4,
+      size: SocialSignInRow._materialIconSize,
       color: AppColors.facebookBlue,
     ),
   };

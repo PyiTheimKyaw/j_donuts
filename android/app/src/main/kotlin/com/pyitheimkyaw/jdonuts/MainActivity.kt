@@ -1,4 +1,4 @@
-package com.example.j_donuts
+package com.pyitheimkyaw.jdonuts
 
 import io.flutter.embedding.android.FlutterActivity
 

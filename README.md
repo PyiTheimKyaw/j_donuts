@@ -164,6 +164,29 @@ sprinkles). It is painted once into a cached layer and revealed by a growing cli
 blurs and gradients are not repainted on every frame of the sweep; only the two rounded ends
 redraw.
 
+## Performance
+
+Measured in profile mode on a Redmi K30 5G (Snapdragon 765G, Android 12) with
+`integration_test/frame_performance_test.dart`:
+
+| Scenario | Frames | Build avg / p99 / worst | Raster avg / p99 / worst | Over 16.7 ms |
+|---|---|---|---|---|
+| Home: three fast scroll passes | 246 | 1.1 / 4.2 / 5.0 ms | 3.0 / 6.6 / 7.1 ms | 0 |
+| Rewards: opened three times (ring sweep, count-up, cards) | 604 | 1.7 / 5.2 / 18.1 ms | 5.7 / 11.8 / 19.9 ms | 3 |
+
+The three slow frames are the first frame of the very first visit to Rewards, when the tab is
+built and the ring's blurred shading is painted for the first time; the sweep itself and every
+later visit stay well inside the 60 fps budget. The ring is painted once into its own layer and
+revealed by a clip, and off-screen tabs stop their tickers and the carousel timer.
+
+```sh
+flutter drive --profile --no-dds --driver=test_driver/perf_driver.dart \
+  --target=integration_test/frame_performance_test.dart -d <device-id>
+```
+
+Reports are written to `build/home_scroll.json` and `build/rewards_entrance.json`.
+`--no-dds` is needed when the phone is connected over wireless debugging.
+
 ## Tests
 
 ```sh
@@ -179,7 +202,7 @@ flutter test integration_test -d <device-id>   # end-to-end on a simulator, emul
 | Layout | Every registration step on a 360×640 phone with the keyboard open and 1.3× text; Onboarding, Welcome, Home, Product detail, Rewards and Settings on a 4.7" (375×667) phone at 1.3× text, in both English and Burmese; the Rewards tier ladder never running under the tabs |
 | App | Session lifecycle: register, relaunch → Home, log out, relaunch → Onboarding |
 | Language | The toggle switches the app between English and Burmese and the choice survives a relaunch; an unsupported stored language falls back to the device language |
-| Integration | `integration_test/register_to_product_test.dart`: a new member registers through every step, lands on Home and opens a product, on a real device |
+| Integration | `integration_test/register_to_product_test.dart`: a new member registers through every step, lands on Home and opens a product, on a real device. `frame_performance_test.dart` records frame timings (see Performance) |
 
 Widget tests run against a fixed seed in `test/fixtures/seed_v1.json`, so editing the app's
 seed content never breaks a behaviour test. They use an in-memory database, an in-memory secure
@@ -207,9 +230,6 @@ painted in code. The design screenshots from the brief are not in this repositor
   (SIL Open Font License) as the closest free match, so letter shapes differ slightly.
 - **Integration test is local only.** It needs a simulator or emulator, so CI runs analyze and
   the unit and widget tests but not the integration test.
-- **Frame timing not profiled.** Animations are built to stay cheap (the points ring is cached
-  and revealed by a clip; off-screen tabs stop their tickers and the carousel timer), but they
-  have not been measured in profile mode on a mid-range Android phone.
 - **Commit granularity.** Each feature landed as one or two commits through its own pull request,
   so commits are larger than ideal; the pull requests give the finer history.
 

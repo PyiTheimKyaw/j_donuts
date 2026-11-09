@@ -1,7 +1,5 @@
-import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:j_donuts/core/db/app_database.dart';
 import 'package:j_donuts/core/widgets/app_button.dart';
 import 'package:j_donuts/features/auth/data/datasources/user_local_data_source.dart';
 import 'package:j_donuts/features/auth/data/mappers/user_mapper.dart';
@@ -166,7 +164,7 @@ void main() {
     testWidgets('a registered number goes straight to the OTP step', (
       tester,
     ) async {
-      final database = AppDatabase(NativeDatabase.memory());
+      final database = testDatabase();
       await UserLocalDataSource(database).upsert(
         UserMapper.toCompanion(
           const RegistrationDetails(

@@ -9,20 +9,23 @@ part of 'catalog_sync_controller.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 /// Refreshes the catalogue in the background whenever the device goes from
-/// offline (or unknown) to online, including at launch. Kept alive so the
-/// listener outlives any one screen.
+/// offline (or unknown) to online, including at launch. Something must listen
+/// to it for the app's lifetime: Riverpod 3 pauses the `ref.listen` of a
+/// provider nobody listens to, and keep-alive alone does not prevent that.
 
 @ProviderFor(CatalogSyncController)
 final catalogSyncControllerProvider = CatalogSyncControllerProvider._();
 
 /// Refreshes the catalogue in the background whenever the device goes from
-/// offline (or unknown) to online, including at launch. Kept alive so the
-/// listener outlives any one screen.
+/// offline (or unknown) to online, including at launch. Something must listen
+/// to it for the app's lifetime: Riverpod 3 pauses the `ref.listen` of a
+/// provider nobody listens to, and keep-alive alone does not prevent that.
 final class CatalogSyncControllerProvider
     extends $NotifierProvider<CatalogSyncController, CatalogSyncState> {
   /// Refreshes the catalogue in the background whenever the device goes from
-  /// offline (or unknown) to online, including at launch. Kept alive so the
-  /// listener outlives any one screen.
+  /// offline (or unknown) to online, including at launch. Something must listen
+  /// to it for the app's lifetime: Riverpod 3 pauses the `ref.listen` of a
+  /// provider nobody listens to, and keep-alive alone does not prevent that.
   CatalogSyncControllerProvider._()
     : super(
         from: null,
@@ -54,8 +57,9 @@ String _$catalogSyncControllerHash() =>
     r'3a44bee2debbc28394315ff21e8e6d03440c0001';
 
 /// Refreshes the catalogue in the background whenever the device goes from
-/// offline (or unknown) to online, including at launch. Kept alive so the
-/// listener outlives any one screen.
+/// offline (or unknown) to online, including at launch. Something must listen
+/// to it for the app's lifetime: Riverpod 3 pauses the `ref.listen` of a
+/// provider nobody listens to, and keep-alive alone does not prevent that.
 
 abstract class _$CatalogSyncController extends $Notifier<CatalogSyncState> {
   CatalogSyncState build();

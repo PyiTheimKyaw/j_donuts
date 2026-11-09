@@ -178,6 +178,18 @@
   "logOutConfirmBody": "You'll need your phone number and OTP to log back in.",
   "cancel": "Cancel",
 
+  "unreadNotifications": "{count, plural, =0{No new notifications} =1{1 new notification} other{{count} new notifications}}",
+  "@unreadNotifications": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "openSection": "See all {section}",
+  "@openSection": {
+    "placeholders": { "section": { "type": "String" } }
+  },
+  "settingsAccount": "Account",
+  "settingsLanguage": "Language",
+  "logOutFailed": "Couldn't log out. Please try again.",
+  "refreshed": "Up to date.",
   "errorGeneric": "Something went wrong. Please try again.",
   "loading": "Loading"
 }

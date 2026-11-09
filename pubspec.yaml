@@ -41,6 +41,16 @@ dev_dependencies:
   riverpod_generator: ^4.0.10
   very_good_analysis: ^11.0.0
 
+# Linux (CI runners and Linux dev machines) uses the OS SQLite instead of
+# downloading a prebuilt library during the build: that download is the one
+# network step in `flutter test`, and a corrupted transfer fails the whole run.
+# Other targets are unlisted, so they keep sqlite3's default bundled build.
+hooks:
+  user_defines:
+    sqlite3:
+      source:
+        linux: system
+
 flutter:
   uses-material-design: true
   generate: true
@@ -52,6 +62,7 @@ flutter:
     - assets/images/shops/
     - assets/images/rewards/
     - assets/images/member/
+    - assets/images/welcome/
     - assets/remote/v1/
 
   fonts:

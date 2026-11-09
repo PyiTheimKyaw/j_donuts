@@ -363,6 +363,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String unreadNotifications(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new notifications',
+      one: '1 new notification',
+      zero: 'No new notifications',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String openSection(String section) {
+    return 'See all $section';
+  }
+
+  @override
+  String get settingsAccount => 'Account';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get logOutFailed => 'Couldn\'t log out. Please try again.';
+
+  @override
+  String get refreshed => 'Up to date.';
+
+  @override
   String get errorGeneric => 'Something went wrong. Please try again.';
 
   @override

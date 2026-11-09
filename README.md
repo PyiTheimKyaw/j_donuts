@@ -3,7 +3,7 @@
 A working slice of the J'Donuts customer app: onboarding with fake login and registration, an offline-first Home and
 Product detail, and an animated Rewards screen.
 
-> Status: registration flow and offline data layer done; Home, Product detail and Rewards next. Sections marked _TBD_ are filled in as later phases land.
+> Status: registration, offline data, Home and the tab shell done; Product detail and Rewards next. Sections marked _TBD_ are filled in as later phases land.
 > The roadmap is in [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md).
 
 ## Versions

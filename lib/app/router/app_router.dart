@@ -14,6 +14,7 @@ import 'package:j_donuts/features/auth/presentation/session/session_controller.d
 import 'package:j_donuts/features/auth/presentation/session/welcome_pending.dart';
 import 'package:j_donuts/features/home/presentation/screens/home_screen.dart';
 import 'package:j_donuts/features/home/presentation/screens/welcome_screen.dart';
+import 'package:j_donuts/features/product/presentation/screens/product_detail_screen.dart';
 import 'package:j_donuts/features/shell/presentation/app_shell.dart';
 import 'package:j_donuts/features/shell/presentation/settings_screen.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
@@ -45,8 +46,10 @@ GoRouter appRouter(Ref ref) {
       ..._shellRoutes,
       GoRoute(
         path: AppRoutes.product,
-        builder: (context, state) =>
-            PlaceholderScreen(title: 'Product ${state.pathParameters['id']}'),
+        builder: (context, state) => ProductDetailScreen(
+          productId: state.pathParameters['id']!,
+          heroTag: state.extra as String?,
+        ),
       ),
     ],
     errorBuilder: (context, state) => PlaceholderScreen(

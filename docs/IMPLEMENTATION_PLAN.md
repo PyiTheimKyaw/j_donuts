@@ -55,8 +55,8 @@ also exercises the Myanmar-script name validation and the text-scale layout chec
 | 3b | `feat/otp` | OTP boxes, shake, lockout, resend countdown | merged |
 | 3c | `feat/name-dob` | name and date-of-birth steps, ring to check morph, registration completes | merged |
 | 4 | `feat/offline-data` | Drift v2 catalogue tables, seed JSON and images, connectivity with reachability, image widget | merged |
-| 5 | `feat/home-shell` | bottom nav with sliding pill, welcome, home sections with skeletons, settings log out | in review |
-| 6 | `feat/product-detail` | hero transition, MMK formatting, animated quantity stepper, live total | |
+| 5 | `feat/home-shell` | bottom nav with sliding pill, welcome, home sections with skeletons, settings log out | merged |
+| 6 | `feat/product-detail` | hero transition, MMK formatting, animated quantity stepper, live total | in review |
 | 7 | `feat/rewards` | points ring, tier ladder, tabs, challenge art with CustomPainter, badge pop | |
 | 8 | `test/widget-integration-tests` | remaining widget tests, register-to-product integration test | |
 | 9 | `chore/polish-readme-builds` | reduce motion and text scale pass, profile run, README, release builds | |

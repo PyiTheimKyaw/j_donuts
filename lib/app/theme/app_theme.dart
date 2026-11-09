@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:j_donuts/app/theme/app_colors.dart';
 import 'package:j_donuts/app/theme/app_spacing.dart';
 import 'package:j_donuts/app/theme/app_typography.dart';
@@ -28,6 +29,7 @@ abstract final class AppTheme {
       filledButtonTheme: _filledButtonTheme,
       snackBarTheme: _snackBarTheme,
       bottomSheetTheme: _bottomSheetTheme,
+      appBarTheme: _appBarTheme,
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
           TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
@@ -90,4 +92,14 @@ abstract final class AppTheme {
           ),
         ),
       );
+
+  /// Every app bar sits on a light surface, and a transparent bar gives iOS no
+  /// colour to infer the status-bar style from, so it is set explicitly.
+  static const AppBarTheme _appBarTheme = AppBarTheme(
+    backgroundColor: Colors.transparent,
+    foregroundColor: AppColors.ink,
+    elevation: 0,
+    scrolledUnderElevation: 0,
+    systemOverlayStyle: SystemUiOverlayStyle.dark,
+  );
 }

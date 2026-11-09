@@ -260,6 +260,9 @@ class AppLocalizationsMy extends AppLocalizations {
   String get increaseQuantity => 'အရေအတွက် တိုးရန်';
 
   @override
+  String get addedShort => 'ထည့်ပြီး';
+
+  @override
   String get addToCart => 'ခြင်းထဲထည့်ရန်';
 
   @override

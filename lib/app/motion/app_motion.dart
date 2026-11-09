@@ -18,6 +18,7 @@ abstract final class AppDurations {
   static const Duration bannerAutoPlay = Duration(seconds: 4);
   static const Duration skeletonShimmer = Duration(milliseconds: 1300);
   static const Duration attentionPulse = Duration(milliseconds: 1100);
+  static const Duration confirmationHold = Duration(milliseconds: 1600);
 }
 
 abstract final class AppCurves {

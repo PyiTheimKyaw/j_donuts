@@ -82,6 +82,7 @@
   "quantity": "အရေအတွက်",
   "decreaseQuantity": "အရေအတွက် လျှော့ရန်",
   "increaseQuantity": "အရေအတွက် တိုးရန်",
+  "addedShort": "ထည့်ပြီး",
   "addToCart": "ခြင်းထဲထည့်ရန်",
   "addedToCart": "{count, plural, other{ပစ္စည်း {count} ခု ခြင်းထဲ ထည့်ပြီးပါပြီ}}",
   "mmkAmount": "{amount} ကျပ်",

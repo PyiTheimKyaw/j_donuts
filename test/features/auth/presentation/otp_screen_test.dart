@@ -1,4 +1,3 @@
-import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +9,7 @@ import 'package:j_donuts/features/auth/domain/auth_policy.dart';
 import 'package:j_donuts/features/auth/domain/entities/entities.dart';
 import 'package:j_donuts/features/auth/presentation/screens/name_screen.dart';
 import 'package:j_donuts/features/auth/presentation/screens/otp_screen.dart';
+import 'package:j_donuts/features/home/presentation/screens/home_screen.dart';
 
 import '../../../helpers/pump_app.dart';
 import '../../../helpers/test_overrides.dart';
@@ -58,7 +58,7 @@ void main() {
       .hasFocus;
 
   Future<AppDatabase> databaseWithRegisteredUser() async {
-    final database = AppDatabase(NativeDatabase.memory());
+    final database = testDatabase();
     await UserLocalDataSource(database).upsert(
       UserMapper.toCompanion(
         const RegistrationDetails(
@@ -165,7 +165,7 @@ void main() {
       await enterCode(tester, rightCode);
 
       expect(find.byType(OtpScreen), findsNothing);
-      expect(find.text('Home'), findsWidgets);
+      expect(find.byType(HomeScreen), findsOneWidget);
     });
   });
 }

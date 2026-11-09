@@ -6,6 +6,7 @@ import 'package:j_donuts/core/widgets/app_button.dart';
 import 'package:j_donuts/features/auth/domain/auth_policy.dart';
 import 'package:j_donuts/features/auth/presentation/screens/date_of_birth_screen.dart';
 import 'package:j_donuts/features/auth/presentation/session/session_controller.dart';
+import 'package:j_donuts/features/home/presentation/screens/welcome_screen.dart';
 
 import '../../../helpers/auth_flow_driver.dart';
 import '../../../helpers/pump_app.dart';
@@ -117,7 +118,7 @@ void main() {
       );
       expect(container.read(sessionControllerProvider).value, isNotNull);
       expect(find.byType(DateOfBirthScreen), findsNothing);
-      expect(find.text('Welcome'), findsWidgets);
+      expect(find.byType(WelcomeScreen), findsOneWidget);
     });
 
     testWidgets('shows a loading state and registers once on double tap', (
@@ -139,7 +140,7 @@ void main() {
         findsOneWidget,
       );
       await tester.pumpAndSettle();
-      expect(find.text('Welcome'), findsWidgets);
+      expect(find.byType(WelcomeScreen), findsOneWidget);
     });
 
     testWidgets('keeps the entered date when returning with Back', (

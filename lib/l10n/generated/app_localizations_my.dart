@@ -365,6 +365,34 @@ class AppLocalizationsMy extends AppLocalizations {
   String get cancel => 'မလုပ်တော့ပါ';
 
   @override
+  String unreadNotifications(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'အသိပေးချက်အသစ် $count ခု',
+      zero: 'အသိပေးချက်အသစ် မရှိပါ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String openSection(String section) {
+    return '$section အားလုံးကြည့်ရန်';
+  }
+
+  @override
+  String get settingsAccount => 'အကောင့်';
+
+  @override
+  String get settingsLanguage => 'ဘာသာစကား';
+
+  @override
+  String get logOutFailed => 'ထွက်၍ မရပါ။ ထပ်ကြိုးစားပါ။';
+
+  @override
+  String get refreshed => 'နောက်ဆုံးအခြေအနေ ဖြစ်ပါပြီ။';
+
+  @override
   String get errorGeneric => 'တစ်ခုခု မှားယွင်းသွားပါသည်။ ထပ်ကြိုးစားပါ။';
 
   @override

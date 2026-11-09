@@ -704,6 +704,42 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @unreadNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No new notifications} =1{1 new notification} other{{count} new notifications}}'**
+  String unreadNotifications(int count);
+
+  /// No description provided for @openSection.
+  ///
+  /// In en, this message translates to:
+  /// **'See all {section}'**
+  String openSection(String section);
+
+  /// No description provided for @settingsAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get settingsAccount;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @logOutFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t log out. Please try again.'**
+  String get logOutFailed;
+
+  /// No description provided for @refreshed.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date.'**
+  String get refreshed;
+
   /// No description provided for @errorGeneric.
   ///
   /// In en, this message translates to:

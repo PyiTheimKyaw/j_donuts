@@ -12,6 +12,11 @@ import 'package:j_donuts/features/auth/presentation/screens/otp_screen.dart';
 import 'package:j_donuts/features/auth/presentation/screens/phone_screen.dart';
 import 'package:j_donuts/features/auth/presentation/session/session_controller.dart';
 import 'package:j_donuts/features/auth/presentation/session/welcome_pending.dart';
+import 'package:j_donuts/features/home/presentation/screens/home_screen.dart';
+import 'package:j_donuts/features/home/presentation/screens/welcome_screen.dart';
+import 'package:j_donuts/features/shell/presentation/app_shell.dart';
+import 'package:j_donuts/features/shell/presentation/settings_screen.dart';
+import 'package:j_donuts/l10n/generated/app_localizations.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_router.g.dart';
@@ -65,16 +70,48 @@ List<RouteBase> get _authRoutes => [
   _step(AppRoutes.otp, (context, state) => const OtpScreen()),
   _step(AppRoutes.name, (context, state) => const NameScreen()),
   _step(AppRoutes.dateOfBirth, (context, state) => const DateOfBirthScreen()),
-  _placeholder(AppRoutes.welcome, 'Welcome'),
+  GoRoute(
+    path: AppRoutes.welcome,
+    builder: (context, state) => const WelcomeScreen(),
+  ),
 ];
 
 List<RouteBase> get _shellRoutes => [
-  _placeholder(AppRoutes.home, 'Home', Icons.home_outlined),
-  _placeholder(AppRoutes.rewards, 'Rewards', Icons.emoji_events_outlined),
-  _placeholder(AppRoutes.orders, 'Orders', Icons.receipt_long_outlined),
-  _placeholder(AppRoutes.wallet, 'Wallet', Icons.wallet_outlined),
-  _placeholder(AppRoutes.settings, 'Settings', Icons.settings_outlined),
+  StatefulShellRoute.indexedStack(
+    builder: (context, state, navigationShell) =>
+        AppShell(navigationShell: navigationShell),
+    branches: [
+      _branch(AppRoutes.home, (context, state) => const HomeScreen()),
+      _branch(
+        AppRoutes.rewards,
+        (context, state) => const PlaceholderScreen(
+          title: 'Rewards',
+          icon: Icons.workspace_premium_outlined,
+        ),
+      ),
+      _branch(
+        AppRoutes.orders,
+        (context, state) => PlaceholderScreen(
+          title: AppLocalizations.of(context).tabOrders,
+          icon: Icons.donut_large,
+        ),
+      ),
+      _branch(
+        AppRoutes.wallet,
+        (context, state) => PlaceholderScreen(
+          title: AppLocalizations.of(context).tabWallet,
+          icon: Icons.account_balance_wallet_outlined,
+        ),
+      ),
+      _branch(AppRoutes.settings, (context, state) => const SettingsScreen()),
+    ],
+  ),
 ];
+
+StatefulShellBranch _branch(String path, GoRouterWidgetBuilder builder) =>
+    StatefulShellBranch(
+      routes: [GoRoute(path: path, builder: builder)],
+    );
 
 GoRoute _step(String path, GoRouterWidgetBuilder builder) => GoRoute(
   path: path,
@@ -84,13 +121,4 @@ GoRoute _step(String path, GoRouterWidgetBuilder builder) => GoRoute(
     name: path,
     child: builder(context, state),
   ),
-);
-
-GoRoute _placeholder(
-  String path,
-  String title, [
-  IconData icon = Icons.construction_rounded,
-]) => GoRoute(
-  path: path,
-  builder: (context, state) => PlaceholderScreen(title: title, icon: icon),
 );

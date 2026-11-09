@@ -5,6 +5,7 @@ import 'package:j_donuts/app/app.dart';
 import 'package:j_donuts/core/storage/key_value_store.dart';
 import 'package:j_donuts/features/auth/data/repositories/secure_session_repository.dart';
 import 'package:j_donuts/features/auth/presentation/screens/onboarding_screen.dart';
+import 'package:j_donuts/features/home/presentation/screens/home_screen.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
 
 import '../helpers/test_overrides.dart';
@@ -35,7 +36,7 @@ void main() {
 
       await pumpApp(tester, store: store);
 
-      expect(find.text('Home'), findsWidgets);
+      expect(find.byType(HomeScreen), findsOneWidget);
     });
 
     testWidgets('ships English and Burmese locales', (tester) async {

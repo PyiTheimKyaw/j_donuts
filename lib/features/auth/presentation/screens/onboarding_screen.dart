@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:j_donuts/app/locale/language_toggle.dart';
 import 'package:j_donuts/app/router/app_routes.dart';
 import 'package:j_donuts/app/theme/app_colors.dart';
 import 'package:j_donuts/app/theme/app_spacing.dart';
@@ -29,21 +30,26 @@ class OnboardingScreen extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       body: DecoratedBox(
         decoration: const BoxDecoration(gradient: AppColors.authBackground),
-        child: LayoutBuilder(
-          builder: (context, constraints) => Column(
-            children: [
-              const Expanded(child: OnboardingDonutCircles()),
-              _ScrollableWhenTooTall(
-                maxHeight: constraints.maxHeight,
-                child: _Actions(
-                  onGetStarted: () =>
-                      _startFlow(context, ref, AuthIntent.register),
-                  onLogIn: () => _startFlow(context, ref, AuthIntent.logIn),
-                  l10n: l10n,
-                ),
+        child: Stack(
+          children: [
+            LayoutBuilder(
+              builder: (context, constraints) => Column(
+                children: [
+                  const Expanded(child: OnboardingDonutCircles()),
+                  _ScrollableWhenTooTall(
+                    maxHeight: constraints.maxHeight,
+                    child: _Actions(
+                      onGetStarted: () =>
+                          _startFlow(context, ref, AuthIntent.register),
+                      onLogIn: () => _startFlow(context, ref, AuthIntent.logIn),
+                      l10n: l10n,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            const _LanguageCorner(),
+          ],
         ),
       ),
     );
@@ -55,6 +61,28 @@ class OnboardingScreen extends ConsumerWidget {
         ? AppRoutes.modeLogin
         : AppRoutes.modeRegister;
     unawaited(context.push('${AppRoutes.phone}?${AppRoutes.modeParam}=$mode'));
+  }
+}
+
+/// Reachable before sign-up, so the whole registration flow can be done in
+/// either language.
+class _LanguageCorner extends StatelessWidget {
+  const _LanguageCorner();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SafeArea(
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: AppSpacing.sm,
+            right: AppSpacing.gutter,
+          ),
+          child: LanguageToggle(),
+        ),
+      ),
+    );
   }
 }
 

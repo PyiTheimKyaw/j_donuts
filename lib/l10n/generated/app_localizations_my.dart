@@ -413,4 +413,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get loading => 'ဖွင့်နေသည်';
+
+  @override
+  String get languageLabel => 'ဘာသာစကား';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageBurmese => 'မြန်မာ';
 }

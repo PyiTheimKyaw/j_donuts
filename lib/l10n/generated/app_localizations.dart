@@ -769,6 +769,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading'**
   String get loading;
+
+  /// No description provided for @languageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageLabel;
+
+  /// Always shown in English, whatever the app language.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// Always shown in Burmese script, whatever the app language.
+  ///
+  /// In en, this message translates to:
+  /// **'မြန်မာ'**
+  String get languageBurmese;
 }
 
 class _AppLocalizationsDelegate

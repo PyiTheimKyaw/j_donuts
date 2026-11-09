@@ -23,6 +23,7 @@ class QuantityStepper extends StatefulWidget {
 
   static const double buttonSize = 32;
   static const double _valueWidth = 44;
+  static const double _borderWidth = 3;
 
   @override
   State<QuantityStepper> createState() => _QuantityStepperState();
@@ -48,7 +49,10 @@ class _QuantityStepperState extends State<QuantityStepper> {
       decoration: BoxDecoration(
         color: AppColors.surfaceMuted,
         borderRadius: BorderRadius.circular(AppRadii.pill),
-        border: Border.all(color: AppColors.surface, width: 3),
+        border: Border.all(
+          color: AppColors.surface,
+          width: QuantityStepper._borderWidth,
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -59,15 +63,7 @@ class _QuantityStepperState extends State<QuantityStepper> {
             semanticLabel: l10n.decreaseQuantity,
             onPressed: widget.onDecrement,
           ),
-          SizedBox(
-            width: QuantityStepper._valueWidth,
-            child: Semantics(
-              label: l10n.quantity,
-              value: '${widget.value}',
-              liveRegion: true,
-              child: _AnimatedValue(value: widget.value, direction: _direction),
-            ),
-          ),
+          _AnimatedValue(value: widget.value, direction: _direction),
           _RoundButton(
             key: const Key('quantity-increment'),
             icon: Icons.add_rounded,
@@ -86,27 +82,40 @@ class _AnimatedValue extends StatelessWidget {
   final int value;
   final int direction;
 
+  static const double _slideFraction = 0.8;
+
   @override
   Widget build(BuildContext context) {
-    return ClipRect(
-      child: AnimatedSwitcher(
-        duration: AppMotion.scaled(context, AppDurations.medium),
-        switchInCurve: AppCurves.standard,
-        switchOutCurve: AppCurves.standard,
-        transitionBuilder: (child, animation) {
-          final entering = child.key == ValueKey(value);
-          final from = Offset(0, entering ? direction * 0.8 : -direction * 0.8);
-          return SlideTransition(
-            position: Tween(begin: from, end: Offset.zero).animate(animation),
-            child: FadeTransition(opacity: animation, child: child),
-          );
-        },
-        child: Text(
-          '$value',
-          key: ValueKey(value),
-          textAlign: TextAlign.center,
-          style: AppTypography.headline,
-        ),
+    return SizedBox(
+      width: QuantityStepper._valueWidth,
+      child: Semantics(
+        label: AppLocalizations.of(context).quantity,
+        value: '$value',
+        liveRegion: true,
+        child: ClipRect(child: _switcher(context)),
+      ),
+    );
+  }
+
+  Widget _switcher(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: AppMotion.scaled(context, AppDurations.medium),
+      switchInCurve: AppCurves.standard,
+      switchOutCurve: AppCurves.standard,
+      transitionBuilder: (child, animation) {
+        final entering = child.key == ValueKey(value);
+        final distance = direction * _slideFraction;
+        final from = Offset(0, entering ? distance : -distance);
+        return SlideTransition(
+          position: Tween(begin: from, end: Offset.zero).animate(animation),
+          child: FadeTransition(opacity: animation, child: child),
+        );
+      },
+      child: Text(
+        '$value',
+        key: ValueKey(value),
+        textAlign: TextAlign.center,
+        style: AppTypography.headline,
       ),
     );
   }
@@ -123,6 +132,8 @@ class _RoundButton extends StatelessWidget {
   final IconData icon;
   final String semanticLabel;
   final VoidCallback? onPressed;
+
+  static const double _iconSize = 20;
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +158,7 @@ class _RoundButton extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: enabled ? AppColors.primary : AppColors.disabledFill,
               ),
-              child: Icon(icon, color: AppColors.onPrimary, size: 20),
+              child: Icon(icon, color: AppColors.onPrimary, size: _iconSize),
             ),
           ),
         ),

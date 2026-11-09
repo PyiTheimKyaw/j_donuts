@@ -20,8 +20,6 @@ class AddToCartButton extends StatefulWidget {
   final String totalLabel;
   final VoidCallback onAdded;
 
-  static const double _dividerHeight = 18;
-
   @override
   State<AddToCartButton> createState() => _AddToCartButtonState();
 }
@@ -52,9 +50,6 @@ class _AddToCartButtonState extends State<AddToCartButton> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final duration = AppMotion.scaled(context, AppDurations.medium);
-
     return Listener(
       onPointerDown: (_) => _setPressed(true),
       onPointerUp: (_) => _setPressed(false),
@@ -72,45 +67,90 @@ class _AddToCartButtonState extends State<AddToCartButton> {
           // rather than overflow the button.
           child: FittedBox(
             fit: BoxFit.scaleDown,
-            child: AnimatedSwitcher(
-              duration: duration,
-              child: _confirming
-                  ? Row(
-                      key: const ValueKey('added'),
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.check_rounded),
-                        const SizedBox(width: AppSpacing.sm),
-                        Text(l10n.addedShort.toUpperCase()),
-                      ],
-                    )
-                  : Row(
-                      key: const ValueKey('add'),
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(l10n.addToCart.toUpperCase()),
-                        Container(
-                          width: 1,
-                          height: AddToCartButton._dividerHeight,
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.md,
-                          ),
-                          color: AppColors.onPrimary,
-                        ),
-                        AnimatedSwitcher(
-                          duration: duration,
-                          child: Text(
-                            widget.totalLabel,
-                            key: ValueKey(widget.totalLabel),
-                            style: AppTypography.button,
-                          ),
-                        ),
-                      ],
-                    ),
+            child: _SwitchingLabel(
+              confirming: _confirming,
+              totalLabel: widget.totalLabel,
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SwitchingLabel extends StatelessWidget {
+  const _SwitchingLabel({required this.confirming, required this.totalLabel});
+
+  final bool confirming;
+  final String totalLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final duration = AppMotion.scaled(context, AppDurations.medium);
+
+    return AnimatedSwitcher(
+      duration: duration,
+      child: confirming
+          ? const _AddedLabel(key: ValueKey('added'))
+          : _AddLabel(
+              key: const ValueKey('add'),
+              totalLabel: totalLabel,
+              duration: duration,
+            ),
+    );
+  }
+}
+
+class _AddedLabel extends StatelessWidget {
+  const _AddedLabel({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(Icons.check_rounded),
+        const SizedBox(width: AppSpacing.sm),
+        Text(AppLocalizations.of(context).addedShort.toUpperCase()),
+      ],
+    );
+  }
+}
+
+class _AddLabel extends StatelessWidget {
+  const _AddLabel({
+    required this.totalLabel,
+    required this.duration,
+    super.key,
+  });
+
+  final String totalLabel;
+  final Duration duration;
+
+  static const double _dividerWidth = 1;
+  static const double _dividerHeight = 18;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(AppLocalizations.of(context).addToCart.toUpperCase()),
+        Container(
+          width: _dividerWidth,
+          height: _dividerHeight,
+          margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          color: AppColors.onPrimary,
+        ),
+        AnimatedSwitcher(
+          duration: duration,
+          child: Text(
+            totalLabel,
+            key: ValueKey(totalLabel),
+            style: AppTypography.button,
+          ),
+        ),
+      ],
     );
   }
 }

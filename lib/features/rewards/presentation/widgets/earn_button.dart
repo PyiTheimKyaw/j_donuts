@@ -30,6 +30,7 @@ class _EarnButtonState extends State<EarnButton>
 
   static const double _pulseScale = 0.06;
   static const double _glowBlur = 14;
+  static const double _glowAlpha = 0.45;
 
   @override
   void didChangeDependencies() {
@@ -110,7 +111,9 @@ class _Face extends StatelessWidget {
         boxShadow: isActive
             ? [
                 BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.45),
+                  color: AppColors.primary.withValues(
+                    alpha: _EarnButtonState._glowAlpha,
+                  ),
                   blurRadius: _EarnButtonState._glowBlur,
                 ),
               ]

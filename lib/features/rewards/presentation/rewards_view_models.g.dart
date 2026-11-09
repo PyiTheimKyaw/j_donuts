@@ -80,7 +80,7 @@ final class SelectedRewardTabProvider
   }
 }
 
-String _$selectedRewardTabHash() => r'8b92ec0a9a64a2c27691a7c243fa999b2b4447ce';
+String _$selectedRewardTabHash() => r'5437fa3deda4fb60c26d56d526ac8ca70d2926a8';
 
 abstract class _$SelectedRewardTab extends $Notifier<ChallengeTab> {
   ChallengeTab build();

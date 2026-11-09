@@ -197,5 +197,14 @@
   "logOutFailed": "Couldn't log out. Please try again.",
   "refreshed": "Up to date.",
   "errorGeneric": "Something went wrong. Please try again.",
-  "loading": "Loading"
+  "loading": "Loading",
+  "languageLabel": "Language",
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "Always shown in English, whatever the app language."
+  },
+  "languageBurmese": "မြန်မာ",
+  "@languageBurmese": {
+    "description": "Always shown in Burmese script, whatever the app language."
+  }
 }

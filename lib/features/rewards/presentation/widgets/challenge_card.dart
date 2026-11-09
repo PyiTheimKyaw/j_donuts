@@ -16,8 +16,6 @@ class ChallengeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
@@ -28,34 +26,45 @@ class ChallengeCard extends StatelessWidget {
         children: [
           ChallengeArt(challenge: challenge, size: artSize),
           const SizedBox(width: AppSpacing.lg),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(challenge.title, style: AppTypography.title),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  l10n.challengeProgress(challenge.progress, challenge.goal),
-                  style: AppTypography.body,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Row(
-                  children: [
-                    EarnButton(isActive: challenge.isComplete),
-                    const SizedBox(width: AppSpacing.lg),
-                    Flexible(
-                      child: Text(
-                        l10n.pointsReward(challenge.rewardPoints),
-                        style: AppTypography.body,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          Expanded(child: _ChallengeDetails(challenge: challenge)),
         ],
       ),
+    );
+  }
+}
+
+class _ChallengeDetails extends StatelessWidget {
+  const _ChallengeDetails({required this.challenge});
+
+  final Challenge challenge;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(challenge.title, style: AppTypography.title),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          l10n.challengeProgress(challenge.progress, challenge.goal),
+          style: AppTypography.body,
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Row(
+          children: [
+            EarnButton(isActive: challenge.isComplete),
+            const SizedBox(width: AppSpacing.lg),
+            Flexible(
+              child: Text(
+                l10n.pointsReward(challenge.rewardPoints),
+                style: AppTypography.body,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

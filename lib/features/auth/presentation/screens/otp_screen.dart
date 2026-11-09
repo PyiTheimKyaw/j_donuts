@@ -76,44 +76,31 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     return true;
   }
 
+  void _listenForFailures() => ref.listen<Failure?>(
+    authFlowControllerProvider.select((state) => state.error),
+    _onFailureChanged,
+  );
+
   @override
   Widget build(BuildContext context) {
-    ref.listen<Failure?>(
-      authFlowControllerProvider.select((state) => state.error),
-      _onFailureChanged,
-    );
+    _listenForFailures();
     final state = ref.watch(authFlowControllerProvider);
-    final l10n = AppLocalizations.of(context);
 
     return AuthScaffold(
       step: OtpScreen.step,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          EntranceAnimation(
-            child: Text(l10n.otpTitle, style: AppTypography.headline),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          EntranceAnimation(
-            index: 1,
-            child: Text(
-              l10n.otpSubtitle(state.phone?.e164 ?? ''),
-              style: AppTypography.body,
-            ),
-          ),
+          _OtpHeading(phone: state.phone?.e164 ?? ''),
           const SizedBox(height: AppSpacing.xxl),
           EntranceAnimation(
             index: 2,
-            child: ShakeTransition(
-              trigger: _shakeCount,
-              child: OtpInput(
-                key: const Key('otp-input'),
-                controller: _codeController,
-                focusNode: _focusNode,
-                enabled: !state.isOtpLocked && !state.isSubmitting,
-                hasError: state.error != null,
-                onCompleted: _verify,
-              ),
+            child: _OtpCodeField(
+              controller: _codeController,
+              focusNode: _focusNode,
+              shakeCount: _shakeCount,
+              state: state,
+              onCompleted: _verify,
             ),
           ),
           _OtpFeedback(state: state),
@@ -131,6 +118,63 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   }
 }
 
+class _OtpCodeField extends StatelessWidget {
+  const _OtpCodeField({
+    required this.controller,
+    required this.focusNode,
+    required this.shakeCount,
+    required this.state,
+    required this.onCompleted,
+  });
+
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final int shakeCount;
+  final AuthFlowState state;
+  final ValueChanged<String> onCompleted;
+
+  @override
+  Widget build(BuildContext context) {
+    return ShakeTransition(
+      trigger: shakeCount,
+      child: OtpInput(
+        key: const Key('otp-input'),
+        controller: controller,
+        focusNode: focusNode,
+        enabled: !state.isOtpLocked && !state.isSubmitting,
+        hasError: state.error != null,
+        onCompleted: onCompleted,
+      ),
+    );
+  }
+}
+
+class _OtpHeading extends StatelessWidget {
+  const _OtpHeading({required this.phone});
+
+  final String phone;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        EntranceAnimation(
+          child: Text(l10n.otpTitle, style: AppTypography.headline),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        EntranceAnimation(
+          index: 1,
+          child: Text(l10n.otpSubtitle(phone), style: AppTypography.body),
+        ),
+      ],
+    );
+  }
+}
+
 class _OtpFeedback extends StatelessWidget {
   const _OtpFeedback({required this.state});
 
@@ -141,26 +185,7 @@ class _OtpFeedback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final message = _message(AppLocalizations.of(context));
-    final Widget content;
-    if (state.isSubmitting) {
-      content = const SizedBox.square(
-        key: ValueKey('verifying'),
-        dimension: _spinnerSize,
-        child: CircularProgressIndicator(
-          strokeWidth: _spinnerStroke,
-          color: AppColors.primary,
-        ),
-      );
-    } else if (message != null) {
-      content = Text(
-        message,
-        key: ValueKey(message),
-        style: AppTypography.bodySmall.copyWith(color: AppColors.error),
-      );
-    } else {
-      content = const SizedBox.shrink(key: ValueKey('idle'));
-    }
+    final content = _content(_message(AppLocalizations.of(context)));
 
     return Padding(
       padding: const EdgeInsets.only(top: AppSpacing.md),
@@ -177,6 +202,28 @@ class _OtpFeedback extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Keyed per state so [AnimatedSwitcher] cross-fades between them.
+  Widget _content(String? message) {
+    if (state.isSubmitting) {
+      return const SizedBox.square(
+        key: ValueKey('verifying'),
+        dimension: _spinnerSize,
+        child: CircularProgressIndicator(
+          strokeWidth: _spinnerStroke,
+          color: AppColors.primary,
+        ),
+      );
+    }
+    if (message != null) {
+      return Text(
+        message,
+        key: ValueKey(message),
+        style: AppTypography.bodySmall.copyWith(color: AppColors.error),
+      );
+    }
+    return const SizedBox.shrink(key: ValueKey('idle'));
   }
 
   String? _message(AppLocalizations l10n) => switch (state.error) {

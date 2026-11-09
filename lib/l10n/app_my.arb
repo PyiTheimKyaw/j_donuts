@@ -125,5 +125,8 @@
   "logOutFailed": "ထွက်၍ မရပါ။ ထပ်ကြိုးစားပါ။",
   "refreshed": "နောက်ဆုံးအခြေအနေ ဖြစ်ပါပြီ။",
   "errorGeneric": "တစ်ခုခု မှားယွင်းသွားပါသည်။ ထပ်ကြိုးစားပါ။",
-  "loading": "ဖွင့်နေသည်"
+  "loading": "ဖွင့်နေသည်",
+  "languageLabel": "ဘာသာစကား",
+  "languageEnglish": "English",
+  "languageBurmese": "မြန်မာ"
 }

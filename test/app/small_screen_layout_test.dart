@@ -9,6 +9,7 @@ import 'package:j_donuts/features/product/presentation/screens/product_detail_sc
 import 'package:j_donuts/features/rewards/presentation/screens/rewards_screen.dart';
 import 'package:j_donuts/features/rewards/presentation/widgets/reward_tabs.dart';
 import 'package:j_donuts/features/rewards/presentation/widgets/tier_ladder_view.dart';
+import 'package:j_donuts/features/shell/presentation/settings_screen.dart';
 import 'package:j_donuts/l10n/generated/app_localizations.dart';
 
 import '../helpers/test_overrides.dart';
@@ -28,6 +29,7 @@ void main() {
     WidgetTester tester,
     Widget screen, {
     bool settles = true,
+    Locale locale = const Locale('en'),
   }) async {
     tester.view
       ..physicalSize = _smallestPhone
@@ -43,6 +45,7 @@ void main() {
           theme: AppTheme.light(),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
+          locale: locale,
           home: screen,
         ),
       ),
@@ -59,43 +62,71 @@ void main() {
     }
   }
 
-  group('On a 4.7" phone with 1.3x text', () {
-    testWidgets('Onboarding fits', (tester) async {
-      await pumpOnSmallestPhone(tester, const OnboardingScreen());
+  /// Burmese strings run longer than English, so every screen is checked in
+  /// both languages the toggle offers.
+  for (final locale in AppLocalizations.supportedLocales) {
+    group('On a 4.7" phone with 1.3x text in ${locale.languageCode}', () {
+      testWidgets('Onboarding fits', (tester) async {
+        await pumpOnSmallestPhone(
+          tester,
+          const OnboardingScreen(),
+          locale: locale,
+        );
 
-      expect(tester.takeException(), isNull);
+        expect(tester.takeException(), isNull);
+      });
+
+      testWidgets('Welcome fits', (tester) async {
+        await pumpOnSmallestPhone(
+          tester,
+          const WelcomeScreen(),
+          locale: locale,
+        );
+
+        expect(tester.takeException(), isNull);
+      });
+
+      testWidgets('Home lays out every section', (tester) async {
+        await pumpOnSmallestPhone(tester, const HomeScreen(), locale: locale);
+        await scrollToEnd(tester);
+
+        expect(tester.takeException(), isNull);
+      });
+
+      testWidgets('Product detail lays out', (tester) async {
+        await pumpOnSmallestPhone(
+          tester,
+          const ProductDetailScreen(productId: 'p_coconut'),
+          locale: locale,
+        );
+        await scrollToEnd(tester);
+
+        expect(tester.takeException(), isNull);
+      });
+
+      testWidgets('Rewards lays out the header and every card', (tester) async {
+        await pumpOnSmallestPhone(
+          tester,
+          const RewardsScreen(),
+          settles: false,
+          locale: locale,
+        );
+        await scrollToEnd(tester);
+
+        expect(tester.takeException(), isNull);
+      });
+
+      testWidgets('Settings fits the language toggle', (tester) async {
+        await pumpOnSmallestPhone(
+          tester,
+          const SettingsScreen(),
+          locale: locale,
+        );
+
+        expect(tester.takeException(), isNull);
+      });
     });
-
-    testWidgets('Welcome fits', (tester) async {
-      await pumpOnSmallestPhone(tester, const WelcomeScreen());
-
-      expect(tester.takeException(), isNull);
-    });
-
-    testWidgets('Home lays out every section', (tester) async {
-      await pumpOnSmallestPhone(tester, const HomeScreen());
-      await scrollToEnd(tester);
-
-      expect(tester.takeException(), isNull);
-    });
-
-    testWidgets('Product detail lays out', (tester) async {
-      await pumpOnSmallestPhone(
-        tester,
-        const ProductDetailScreen(productId: 'p_coconut'),
-      );
-      await scrollToEnd(tester);
-
-      expect(tester.takeException(), isNull);
-    });
-
-    testWidgets('Rewards lays out the header and every card', (tester) async {
-      await pumpOnSmallestPhone(tester, const RewardsScreen(), settles: false);
-      await scrollToEnd(tester);
-
-      expect(tester.takeException(), isNull);
-    });
-  });
+  }
 
   testWidgets('the tier ladder never runs under the Rewards tabs', (
     tester,

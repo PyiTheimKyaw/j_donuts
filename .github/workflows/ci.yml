@@ -29,6 +29,11 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Install system SQLite
+        # pubspec.yaml points sqlite3 at the OS library on Linux; the -dev
+        # package provides the unversioned libsqlite3.so that dlopen looks for.
+        run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
+
       - name: Install dependencies
         run: flutter pub get
 

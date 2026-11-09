@@ -23,13 +23,17 @@ List<Override> testOverrides({
   KeyValueStore? store,
   ConnectivityService? connectivity,
   Duration latency = Duration.zero,
+
+  /// False when the same database must survive a simulated relaunch; the
+  /// caller then closes it.
+  bool closeDatabaseOnDispose = true,
 }) {
   final db = database ?? testDatabase();
   final kv = store ?? InMemoryKeyValueStore();
 
   return [
     appDatabaseProvider.overrideWith((ref) {
-      ref.onDispose(db.close);
+      if (closeDatabaseOnDispose) ref.onDispose(db.close);
       return db;
     }),
     keyValueStoreProvider.overrideWithValue(kv),

@@ -34,7 +34,7 @@ void main() {
 
   tearDown(() => database.close());
 
-  group('AppDatabase migration v1 to v2', () {
+  group('AppDatabase migration from v1', () {
     test('keeps users registered under v1', () async {
       final users = await database.select(database.users).get();
 
@@ -62,13 +62,13 @@ void main() {
       );
     });
 
-    test('records schema version 2', () async {
+    test('records the current schema version', () async {
       final version = await database
           .customSelect('PRAGMA user_version')
           .map((row) => row.read<int>('user_version'))
           .getSingle();
 
-      expect(version, 2);
+      expect(version, database.schemaVersion);
     });
 
     test('new tables are writable after the upgrade', () async {
@@ -80,11 +80,56 @@ void main() {
     });
   });
 
-  test('a fresh install creates v2 directly', () async {
+  test('a fresh install creates the latest schema directly', () async {
     final fresh = AppDatabase(NativeDatabase.memory());
     addTearDown(fresh.close);
 
     expect(await fresh.select(fresh.products).get(), isEmpty);
-    expect(fresh.schemaVersion, 2);
+    expect(fresh.schemaVersion, 3);
+  });
+
+  group('AppDatabase migration from v2', () {
+    late AppDatabase v2;
+
+    setUp(() {
+      v2 = AppDatabase(
+        NativeDatabase.memory(
+          setup: (raw) {
+            raw
+              ..execute(_v1UsersTable)
+              ..execute(_v2MembersTable)
+              ..execute(
+                "INSERT INTO members VALUES ('m_current', 'Hania', "
+                "'asset://images/member/avatar.jpg', 'silver', 680000, 500, "
+                '2, 3)',
+              )
+              ..userVersion = 2;
+          },
+        ),
+      );
+    });
+
+    tearDown(() => v2.close());
+
+    test('adds tier_start_points and keeps the member', () async {
+      final member = await v2.select(v2.members).getSingle();
+
+      expect(member.totalPoints, 680000);
+      expect(member.tierStartPoints, 0);
+    });
   });
 }
+
+/// The members table as shipped in v2, before tier_start_points.
+const String _v2MembersTable = '''
+CREATE TABLE members (
+  id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  photo_url TEXT NOT NULL,
+  tier TEXT NOT NULL,
+  total_points INTEGER NOT NULL,
+  points_to_next_tier INTEGER NOT NULL,
+  notification_count INTEGER NOT NULL,
+  reward_count INTEGER NOT NULL,
+  PRIMARY KEY (id)
+)''';

@@ -15,6 +15,7 @@ final class Member extends Equatable {
     required this.pointsToNextTier,
     required this.notificationCount,
     required this.rewardCount,
+    this.tierStartPoints = 0,
   });
 
   final String id;
@@ -23,6 +24,7 @@ final class Member extends Equatable {
   final LoyaltyTier tier;
   final int totalPoints;
   final int pointsToNextTier;
+  final int tierStartPoints;
   final int notificationCount;
   final int rewardCount;
 
@@ -30,6 +32,16 @@ final class Member extends Equatable {
   LoyaltyTier? get nextTier {
     final next = tier.index + 1;
     return next < LoyaltyTier.values.length ? LoyaltyTier.values[next] : null;
+  }
+
+  /// 0..1 through the current tier; 1 at the top tier. Drives the points ring
+  /// and the ladder line, so both always agree.
+  double get tierProgress {
+    if (nextTier == null) return 1;
+    final covered = totalPoints - tierStartPoints;
+    if (covered <= 0) return 0;
+    final span = covered + pointsToNextTier;
+    return (covered / span).clamp(0, 1);
   }
 
   @override
@@ -40,6 +52,7 @@ final class Member extends Equatable {
     tier,
     totalPoints,
     pointsToNextTier,
+    tierStartPoints,
     notificationCount,
     rewardCount,
   ];

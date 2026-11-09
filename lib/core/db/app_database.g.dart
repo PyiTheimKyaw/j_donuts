@@ -2421,6 +2421,18 @@ class $MembersTable extends Members with TableInfo<$MembersTable, MemberRow> {
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _tierStartPointsMeta = const VerificationMeta(
+    'tierStartPoints',
+  );
+  @override
+  late final GeneratedColumn<int> tierStartPoints = GeneratedColumn<int>(
+    'tier_start_points',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _notificationCountMeta = const VerificationMeta(
     'notificationCount',
   );
@@ -2451,6 +2463,7 @@ class $MembersTable extends Members with TableInfo<$MembersTable, MemberRow> {
     tier,
     totalPoints,
     pointsToNextTier,
+    tierStartPoints,
     notificationCount,
     rewardCount,
   ];
@@ -2517,6 +2530,15 @@ class $MembersTable extends Members with TableInfo<$MembersTable, MemberRow> {
     } else if (isInserting) {
       context.missing(_pointsToNextTierMeta);
     }
+    if (data.containsKey('tier_start_points')) {
+      context.handle(
+        _tierStartPointsMeta,
+        tierStartPoints.isAcceptableOrUnknown(
+          data['tier_start_points']!,
+          _tierStartPointsMeta,
+        ),
+      );
+    }
     if (data.containsKey('notification_count')) {
       context.handle(
         _notificationCountMeta,
@@ -2572,6 +2594,10 @@ class $MembersTable extends Members with TableInfo<$MembersTable, MemberRow> {
         DriftSqlType.int,
         data['${effectivePrefix}points_to_next_tier'],
       )!,
+      tierStartPoints: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}tier_start_points'],
+      )!,
       notificationCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}notification_count'],
@@ -2596,6 +2622,10 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
   final String tier;
   final int totalPoints;
   final int pointsToNextTier;
+
+  /// v3. Where the current tier began, so progress toward the next tier is a
+  /// fraction rather than just a remaining count.
+  final int tierStartPoints;
   final int notificationCount;
   final int rewardCount;
   const MemberRow({
@@ -2605,6 +2635,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
     required this.tier,
     required this.totalPoints,
     required this.pointsToNextTier,
+    required this.tierStartPoints,
     required this.notificationCount,
     required this.rewardCount,
   });
@@ -2617,6 +2648,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
     map['tier'] = Variable<String>(tier);
     map['total_points'] = Variable<int>(totalPoints);
     map['points_to_next_tier'] = Variable<int>(pointsToNextTier);
+    map['tier_start_points'] = Variable<int>(tierStartPoints);
     map['notification_count'] = Variable<int>(notificationCount);
     map['reward_count'] = Variable<int>(rewardCount);
     return map;
@@ -2630,6 +2662,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
       tier: Value(tier),
       totalPoints: Value(totalPoints),
       pointsToNextTier: Value(pointsToNextTier),
+      tierStartPoints: Value(tierStartPoints),
       notificationCount: Value(notificationCount),
       rewardCount: Value(rewardCount),
     );
@@ -2647,6 +2680,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
       tier: serializer.fromJson<String>(json['tier']),
       totalPoints: serializer.fromJson<int>(json['totalPoints']),
       pointsToNextTier: serializer.fromJson<int>(json['pointsToNextTier']),
+      tierStartPoints: serializer.fromJson<int>(json['tierStartPoints']),
       notificationCount: serializer.fromJson<int>(json['notificationCount']),
       rewardCount: serializer.fromJson<int>(json['rewardCount']),
     );
@@ -2661,6 +2695,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
       'tier': serializer.toJson<String>(tier),
       'totalPoints': serializer.toJson<int>(totalPoints),
       'pointsToNextTier': serializer.toJson<int>(pointsToNextTier),
+      'tierStartPoints': serializer.toJson<int>(tierStartPoints),
       'notificationCount': serializer.toJson<int>(notificationCount),
       'rewardCount': serializer.toJson<int>(rewardCount),
     };
@@ -2673,6 +2708,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
     String? tier,
     int? totalPoints,
     int? pointsToNextTier,
+    int? tierStartPoints,
     int? notificationCount,
     int? rewardCount,
   }) => MemberRow(
@@ -2682,6 +2718,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
     tier: tier ?? this.tier,
     totalPoints: totalPoints ?? this.totalPoints,
     pointsToNextTier: pointsToNextTier ?? this.pointsToNextTier,
+    tierStartPoints: tierStartPoints ?? this.tierStartPoints,
     notificationCount: notificationCount ?? this.notificationCount,
     rewardCount: rewardCount ?? this.rewardCount,
   );
@@ -2697,6 +2734,9 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
       pointsToNextTier: data.pointsToNextTier.present
           ? data.pointsToNextTier.value
           : this.pointsToNextTier,
+      tierStartPoints: data.tierStartPoints.present
+          ? data.tierStartPoints.value
+          : this.tierStartPoints,
       notificationCount: data.notificationCount.present
           ? data.notificationCount.value
           : this.notificationCount,
@@ -2715,6 +2755,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
           ..write('tier: $tier, ')
           ..write('totalPoints: $totalPoints, ')
           ..write('pointsToNextTier: $pointsToNextTier, ')
+          ..write('tierStartPoints: $tierStartPoints, ')
           ..write('notificationCount: $notificationCount, ')
           ..write('rewardCount: $rewardCount')
           ..write(')'))
@@ -2729,6 +2770,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
     tier,
     totalPoints,
     pointsToNextTier,
+    tierStartPoints,
     notificationCount,
     rewardCount,
   );
@@ -2742,6 +2784,7 @@ class MemberRow extends DataClass implements Insertable<MemberRow> {
           other.tier == this.tier &&
           other.totalPoints == this.totalPoints &&
           other.pointsToNextTier == this.pointsToNextTier &&
+          other.tierStartPoints == this.tierStartPoints &&
           other.notificationCount == this.notificationCount &&
           other.rewardCount == this.rewardCount);
 }
@@ -2753,6 +2796,7 @@ class MembersCompanion extends UpdateCompanion<MemberRow> {
   final Value<String> tier;
   final Value<int> totalPoints;
   final Value<int> pointsToNextTier;
+  final Value<int> tierStartPoints;
   final Value<int> notificationCount;
   final Value<int> rewardCount;
   final Value<int> rowid;
@@ -2763,6 +2807,7 @@ class MembersCompanion extends UpdateCompanion<MemberRow> {
     this.tier = const Value.absent(),
     this.totalPoints = const Value.absent(),
     this.pointsToNextTier = const Value.absent(),
+    this.tierStartPoints = const Value.absent(),
     this.notificationCount = const Value.absent(),
     this.rewardCount = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -2774,6 +2819,7 @@ class MembersCompanion extends UpdateCompanion<MemberRow> {
     required String tier,
     required int totalPoints,
     required int pointsToNextTier,
+    this.tierStartPoints = const Value.absent(),
     required int notificationCount,
     required int rewardCount,
     this.rowid = const Value.absent(),
@@ -2792,6 +2838,7 @@ class MembersCompanion extends UpdateCompanion<MemberRow> {
     Expression<String>? tier,
     Expression<int>? totalPoints,
     Expression<int>? pointsToNextTier,
+    Expression<int>? tierStartPoints,
     Expression<int>? notificationCount,
     Expression<int>? rewardCount,
     Expression<int>? rowid,
@@ -2803,6 +2850,7 @@ class MembersCompanion extends UpdateCompanion<MemberRow> {
       if (tier != null) 'tier': tier,
       if (totalPoints != null) 'total_points': totalPoints,
       if (pointsToNextTier != null) 'points_to_next_tier': pointsToNextTier,
+      if (tierStartPoints != null) 'tier_start_points': tierStartPoints,
       if (notificationCount != null) 'notification_count': notificationCount,
       if (rewardCount != null) 'reward_count': rewardCount,
       if (rowid != null) 'rowid': rowid,
@@ -2816,6 +2864,7 @@ class MembersCompanion extends UpdateCompanion<MemberRow> {
     Value<String>? tier,
     Value<int>? totalPoints,
     Value<int>? pointsToNextTier,
+    Value<int>? tierStartPoints,
     Value<int>? notificationCount,
     Value<int>? rewardCount,
     Value<int>? rowid,
@@ -2827,6 +2876,7 @@ class MembersCompanion extends UpdateCompanion<MemberRow> {
       tier: tier ?? this.tier,
       totalPoints: totalPoints ?? this.totalPoints,
       pointsToNextTier: pointsToNextTier ?? this.pointsToNextTier,
+      tierStartPoints: tierStartPoints ?? this.tierStartPoints,
       notificationCount: notificationCount ?? this.notificationCount,
       rewardCount: rewardCount ?? this.rewardCount,
       rowid: rowid ?? this.rowid,
@@ -2854,6 +2904,9 @@ class MembersCompanion extends UpdateCompanion<MemberRow> {
     if (pointsToNextTier.present) {
       map['points_to_next_tier'] = Variable<int>(pointsToNextTier.value);
     }
+    if (tierStartPoints.present) {
+      map['tier_start_points'] = Variable<int>(tierStartPoints.value);
+    }
     if (notificationCount.present) {
       map['notification_count'] = Variable<int>(notificationCount.value);
     }
@@ -2875,6 +2928,7 @@ class MembersCompanion extends UpdateCompanion<MemberRow> {
           ..write('tier: $tier, ')
           ..write('totalPoints: $totalPoints, ')
           ..write('pointsToNextTier: $pointsToNextTier, ')
+          ..write('tierStartPoints: $tierStartPoints, ')
           ..write('notificationCount: $notificationCount, ')
           ..write('rewardCount: $rewardCount, ')
           ..write('rowid: $rowid')
@@ -5392,6 +5446,7 @@ typedef $$MembersTableCreateCompanionBuilder = MembersCompanion Function({
   required String tier,
   required int totalPoints,
   required int pointsToNextTier,
+  Value<int> tierStartPoints,
   required int notificationCount,
   required int rewardCount,
   Value<int> rowid,
@@ -5403,6 +5458,7 @@ typedef $$MembersTableUpdateCompanionBuilder = MembersCompanion Function({
   Value<String> tier,
   Value<int> totalPoints,
   Value<int> pointsToNextTier,
+  Value<int> tierStartPoints,
   Value<int> notificationCount,
   Value<int> rewardCount,
   Value<int> rowid,
@@ -5444,6 +5500,11 @@ class $$MembersTableFilterComposer
 
   ColumnFilters<int> get pointsToNextTier => $composableBuilder(
     column: $table.pointsToNextTier,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get tierStartPoints => $composableBuilder(
+    column: $table.tierStartPoints,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5497,6 +5558,11 @@ class $$MembersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get tierStartPoints => $composableBuilder(
+    column: $table.tierStartPoints,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get notificationCount => $composableBuilder(
     column: $table.notificationCount,
     builder: (column) => ColumnOrderings(column),
@@ -5536,6 +5602,11 @@ class $$MembersTableAnnotationComposer
 
   GeneratedColumn<int> get pointsToNextTier => $composableBuilder(
     column: $table.pointsToNextTier,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get tierStartPoints => $composableBuilder(
+    column: $table.tierStartPoints,
     builder: (column) => column,
   );
 
@@ -5584,6 +5655,7 @@ class $$MembersTableTableManager
                 Value<String> tier = const Value.absent(),
                 Value<int> totalPoints = const Value.absent(),
                 Value<int> pointsToNextTier = const Value.absent(),
+                Value<int> tierStartPoints = const Value.absent(),
                 Value<int> notificationCount = const Value.absent(),
                 Value<int> rewardCount = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -5594,6 +5666,7 @@ class $$MembersTableTableManager
                 tier: tier,
                 totalPoints: totalPoints,
                 pointsToNextTier: pointsToNextTier,
+                tierStartPoints: tierStartPoints,
                 notificationCount: notificationCount,
                 rewardCount: rewardCount,
                 rowid: rowid,
@@ -5606,6 +5679,7 @@ class $$MembersTableTableManager
                 required String tier,
                 required int totalPoints,
                 required int pointsToNextTier,
+                Value<int> tierStartPoints = const Value.absent(),
                 required int notificationCount,
                 required int rewardCount,
                 Value<int> rowid = const Value.absent(),
@@ -5616,6 +5690,7 @@ class $$MembersTableTableManager
                 tier: tier,
                 totalPoints: totalPoints,
                 pointsToNextTier: pointsToNextTier,
+                tierStartPoints: tierStartPoints,
                 notificationCount: notificationCount,
                 rewardCount: rewardCount,
                 rowid: rowid,

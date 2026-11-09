@@ -584,6 +584,18 @@ abstract class AppLocalizations {
   /// **'{points} pts Remaining\nto become {tier}'**
   String tierRemaining(String points, String tier);
 
+  /// No description provided for @tierAchieved.
+  ///
+  /// In en, this message translates to:
+  /// **'Achieved'**
+  String get tierAchieved;
+
+  /// No description provided for @rewardsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 reward available} other{{count} rewards available}}'**
+  String rewardsAvailable(int count);
+
   /// No description provided for @tierSoon.
   ///
   /// In en, this message translates to:

@@ -92,6 +92,8 @@
   "totalPoints": "စုစုပေါင်း အမှတ်",
   "tierYouAreHere": "သင် ယခု ဤနေရာတွင်",
   "tierRemaining": "{tier} ဖြစ်ရန်\n{points} မှတ် လိုသေးသည်",
+  "tierAchieved": "ရရှိပြီး",
+  "rewardsAvailable": "{count, plural, other{ဆုလာဘ် {count} ခု ရယူနိုင်သည်}}",
   "tierSoon": "မကြာမီ ဤနေရာသို့ ရောက်ပါမည်",
   "eatMoreEarnMore": "များများစား များများရ",
   "gift": "လက်ဆောင်",

@@ -3,7 +3,7 @@
 A working slice of the J'Donuts customer app: onboarding with fake login and registration, an offline-first Home and
 Product detail, and an animated Rewards screen.
 
-> Status: registration, offline data, Home and the tab shell done; Product detail and Rewards next. Sections marked _TBD_ are filled in as later phases land.
+> Status: all three tasks built (registration, Home and Product detail, Rewards); final polish, builds and the integration test next. Sections marked _TBD_ are filled in as later phases land.
 > The roadmap is in [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md).
 
 ## Versions
@@ -110,7 +110,30 @@ streams, so anything written to it shows up everywhere at once.
 
 ### Animations
 
-_TBD — written in Phase 7._
+All durations and curves are named constants in `lib/app/motion/app_motion.dart`. Every
+animation goes through one helper that returns a zero duration when the system's Reduce Motion
+setting is on, so the final frame shows immediately. Purely decorative motion, such as the
+carousel auto-play, the skeleton shimmer and the Earn pulse, is switched off entirely.
+
+| Where | What moves |
+|---|---|
+| Onboarding | Donut circles drift in from the corners; title, buttons and footer enter staggered |
+| Registration steps | Shared-axis slide between steps; the progress ring sweeps 25% → 50% → 75% → 100% across screens (it is a Hero) and morphs into a check |
+| Inputs | Focus and error borders animate; error text slides in and out |
+| Buttons | Scale on press; Continue morphs into a spinner while loading and ignores a second tap |
+| OTP | Each digit pops into its box; a wrong code shakes and clears the boxes |
+| Welcome | Photo tiles slide in staggered from alternating sides, then the title and button rise |
+| Home | Skeleton shimmer while loading; sections enter staggered; the banner carousel auto-plays and pauses on touch; the offline banner collapses away |
+| Bottom nav | The pill slides to the selected tab while the slots resize around it |
+| Product tile → detail | Hero flight of the product image; the stepper pops in; the quantity slides up or down with the change; the total cross-fades; Add to cart confirms with a check |
+| Rewards | The points ring sweeps to the member's tier progress while the total counts up to 680,000 (one controller, so both land together); tiers enter in order and the connector to the next tier fills; the Rewards badge pops in; the tab indicator slides and resizes between the two tabs while the card list cross-fades; cards enter staggered; the donut colours in by quarters and the coffee arc fills; Earn pulses only when a challenge is complete |
+
+The points ring, ladder connectors, tier shields, donut quarters, coffee arc, progress ring and
+shops scenery are all drawn with `CustomPainter`. The points ring is shaded as an inflated donut
+(a cross-section gradient across the tube, a glossy highlight, a contact shadow and shaded
+sprinkles). It is painted once into a cached layer and revealed by a growing clip, so the
+blurs and gradients are not repainted on every frame of the sweep; only the two rounded ends
+redraw.
 
 ## Tests
 

@@ -298,6 +298,19 @@ class AppLocalizationsMy extends AppLocalizations {
   }
 
   @override
+  String get tierAchieved => 'ရရှိပြီး';
+
+  @override
+  String rewardsAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ဆုလာဘ် $count ခု ရယူနိုင်သည်',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get tierSoon => 'မကြာမီ ဤနေရာသို့ ရောက်ပါမည်';
 
   @override

@@ -1,0 +1,99 @@
+import 'package:flutter/material.dart';
+
+abstract final class AppColors {
+  // Brand
+  static const Color primary = Color(0xFF4FC8EC); // cyan buttons, nav bar
+  static const Color primaryDark = Color(0xFF2BB3DC);
+  static const Color accent = Color(0xFFF04E98); // magenta links, pill, ring
+  static const Color accentSoft = Color(0xFFFFB1D1);
+  static const Color warning = Color(0xFFFF8A1F); // orange badges, coffee arc
+  static const Color purple = Color(0xFF6B4FBB); // banner background
+
+  // Backgrounds
+  static const Color authGradientTop = Color(0xFFFFDCE7);
+  static const Color authGradientBottom = Color(0xFFFFF6F9);
+  static const Color homeHeaderTop = Color(0xFFFFEBD6);
+  static const Color homeHeaderBottom = Color(0xFFFFF4E8);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color surfaceMuted = Color(0xFFF3F4F6);
+  static const Color scaffold = Color(0xFFF7F7F9);
+
+  // Ink
+  static const Color ink = Color(0xFF1F1F2E);
+  static const Color inkSecondary = Color(0xFF6B7280);
+  static const Color inkTertiary = Color(0xFF9CA3AF);
+  static const Color onPrimary = Color(0xFFFFFFFF);
+  static const Color divider = Color(0xFFE5E7EB);
+
+  // Feedback
+  static const Color error = Color(0xFFE53935);
+  static const Color success = Color(0xFF43A047);
+  static const Color skeletonBase = Color(0xFFECEDF0);
+  static const Color skeletonHighlight = Color(0xFFF8F8FA);
+
+  // Loyalty tiers
+  static const Color tierBronze = Color(0xFFC98A5A);
+  static const Color tierSilver = Color(0xFFB8BCC4);
+  static const Color tierGold = Color(0xFFE7C45A);
+  static const Color tierPlatinum = Color(0xFF9ED8F0);
+  static const Color tierSilverShade = Color(0xFF8E939C);
+  static const Color tierGoldShade = Color(0xFFC9A332);
+  static const Color tierPlatinumShade = Color(0xFF5FB6DA);
+  static const Color ladderTrack = Color(0xFFE6E7EB);
+
+  // Points ring
+  static const Color ringTrack = Color(0xFFEFEFF2);
+  static const Color ringIcingLight = Color(0xFFF59AC6);
+  static const Color ringIcingDeep = Color(0xFFE2549A);
+  static const Color ringSprinkle = Color(0xFFFFE3F0);
+  static const Color ringIcingEdge = Color(0xFFC93E83);
+  static const Color ringIcingShadow = Color(0x55B23472);
+  static const Color ringHighlight = Color(0xCCFFFFFF);
+  static const Color ringHighlightClear = Color(0x00FFFFFF);
+  static const Color ringTrackShade = Color(0xFFE2E3E8);
+  static const Color sprinkleWhite = Color(0xFFFFF8FB);
+  static const Color sprinkleShadow = Color(0x66A8306A);
+
+  // Illustration
+  static const Color pastelCyan = Color(0xFF7FD9EC);
+  static const Color pastelBlue = Color(0xFFC9E7F6);
+  static const Color pastelPeach = Color(0xFFFBE3D2);
+  static const Color pastelLavender = Color(0xFFE6DBF8);
+  static const Color pastelPink = Color(0xFFFFD6E3);
+  static const Color pastelYellow = Color(0xFFFFE9B5);
+  static const Color donutDough = Color(0xFFE9B983);
+  static const Color donutShadow = Color(0xFFC98F5A);
+  static const Color icingPink = Color(0xFFF58FB6);
+  static const Color icingPurple = Color(0xFF9D7FDC);
+  static const Color icingChocolate = Color(0xFF5B3A2E);
+  static const Color icingWhite = Color(0xFFFFF4F7);
+  static const Color googleBlue = Color(0xFF4285F4);
+  static const Color facebookBlue = Color(0xFF1877F2);
+  static const Color tileShadow = Color(0x1A1F1F2E);
+
+  // Nearby-shops scenery
+  static const Color sceneryCloud = Color(0xFFFBF2E3);
+  static const Color sceneryCloudShade = Color(0xFFE8D4B6);
+  static const Color sceneryHillFar = Color(0xFF8ECFA0);
+  static const Color sceneryTreeDark = Color(0xFF2F7D5B);
+  static const Color sceneryTreeLight = Color(0xFF4FA06F);
+  static const Color sceneryGrass = Color(0xFF6DBB5E);
+  static const Color sceneryGrassLight = Color(0xFF93D173);
+  static const Color scenerySprout = Color(0xFFCFE46A);
+
+  // Disabled
+  static const Color disabledFill = Color(0xFFE2E4E8);
+  static const Color disabledInk = Color(0xFFB4B8C0);
+
+  static const LinearGradient authBackground = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [authGradientTop, authGradientBottom],
+  );
+
+  static const LinearGradient homeHeader = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [homeHeaderTop, homeHeaderBottom],
+  );
+}
